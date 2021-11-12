@@ -9,7 +9,7 @@ ASN.1 modules for Python
 
 The `pyasn1-modules` package contains a collection of
 [ASN.1](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-X.208-198811-W!!PDF-E&type=items)
-data structures expressed as Python classes based on [pyasn1](https://github.com/etingof/pyasn1)
+data structures expressed as Python classes based on [pyasn1](https://github.com/pysnmp/pyasn1)
 data model.
 
 If ASN.1 module you need is not present in this collection, try using
@@ -20,7 +20,7 @@ Feedback
 --------
 
 If something does not work as expected, 
-[open an issue](https://github.com/etingof/pyasn1-modules/issues) at GitHub
+[open an issue](https://github.com/pysnmp/pyasn1-modules/issues) at GitHub
 or post your question [on Stack Overflow](https://stackoverflow.com/questions/ask)
  
 New modules contributions are welcome via GitHub pull requests.
