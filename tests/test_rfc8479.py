@@ -11,11 +11,7 @@ from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import univ
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc4055
-from pyasn1_modules import rfc5652
-from pyasn1_modules import rfc5958
-from pyasn1_modules import rfc8479
+from pyasn1_modules import pem, rfc4055, rfc5652, rfc5958, rfc8479
 
 
 class ValidationParmTestCase(unittest.TestCase):

@@ -12,8 +12,7 @@ from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 from pyasn1.type import univ
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc3565
+from pyasn1_modules import pem, rfc3565
 
 
 class AESKeyWrapTestCase(unittest.TestCase):

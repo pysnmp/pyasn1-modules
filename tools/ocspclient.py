@@ -14,13 +14,10 @@ try:
 except ImportError:
     import urllib.request as urllib2
 
-from pyasn1.codec.der import decoder
-from pyasn1.codec.der import encoder
+from pyasn1.codec.der import decoder, encoder
 from pyasn1.type import univ
 
-from pyasn1_modules import rfc2560
-from pyasn1_modules import rfc2459
-from pyasn1_modules import pem
+from pyasn1_modules import pem, rfc2459, rfc2560
 
 sha1oid = univ.ObjectIdentifier((1, 3, 14, 3, 2, 26))
 

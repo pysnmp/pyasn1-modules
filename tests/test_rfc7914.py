@@ -11,12 +11,7 @@ import unittest
 from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc5280
-from pyasn1_modules import rfc5958
-from pyasn1_modules import rfc7914
-from pyasn1_modules import rfc8018
-
+from pyasn1_modules import pem, rfc5280, rfc5958, rfc7914, rfc8018
 
 # From RFC 7914, Section 13
 

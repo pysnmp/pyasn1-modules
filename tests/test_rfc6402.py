@@ -10,13 +10,9 @@ import unittest
 
 from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
-from pyasn1.type import char
-from pyasn1.type import namedtype
-from pyasn1.type import univ
+from pyasn1.type import char, namedtype, univ
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc5652
-from pyasn1_modules import rfc6402
+from pyasn1_modules import pem, rfc5652, rfc6402
 
 
 class BackwardCompatibilityTestCase(unittest.TestCase):

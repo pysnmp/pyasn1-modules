@@ -11,10 +11,7 @@ import unittest
 from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc5652
-from pyasn1_modules import rfc5083
-from pyasn1_modules import rfc5035
+from pyasn1_modules import pem, rfc5035, rfc5083, rfc5652
 
 
 class AuthEnvelopedDataTestCase(unittest.TestCase):

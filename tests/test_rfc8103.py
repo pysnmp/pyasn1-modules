@@ -11,9 +11,7 @@ import unittest
 from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc5280
-from pyasn1_modules import rfc8103
+from pyasn1_modules import pem, rfc5280, rfc8103
 
 
 class CAEADChaCha20Poly1305TestCase(unittest.TestCase):

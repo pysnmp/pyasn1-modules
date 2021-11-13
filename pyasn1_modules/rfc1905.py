@@ -9,11 +9,7 @@
 # ASN.1 source from:
 # http://www.ietf.org/rfc/rfc1905.txt
 #
-from pyasn1.type import constraint
-from pyasn1.type import namedtype
-from pyasn1.type import namedval
-from pyasn1.type import tag
-from pyasn1.type import univ
+from pyasn1.type import constraint, namedtype, namedval, tag, univ
 
 from pyasn1_modules import rfc1902
 

@@ -12,10 +12,7 @@ from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.compat.octets import str2octs
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc2634
-from pyasn1_modules import rfc4073
-from pyasn1_modules import rfc5652
+from pyasn1_modules import pem, rfc2634, rfc4073, rfc5652
 
 
 class ContentCollectionTestCase(unittest.TestCase):

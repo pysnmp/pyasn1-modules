@@ -13,15 +13,11 @@
 # https://www.rfc-editor.org/errata/eid5875
 #
 
-from pyasn1.type import char
-from pyasn1.type import constraint
-from pyasn1.type import namedtype
-from pyasn1.type import namedval
-from pyasn1.type import univ
+import string
+
+from pyasn1.type import char, constraint, namedtype, namedval, univ
 
 from pyasn1_modules import rfc5652
-
-import string
 
 MAX = float('inf')
 

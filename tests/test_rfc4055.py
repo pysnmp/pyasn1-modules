@@ -12,9 +12,7 @@ from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 from pyasn1.type import univ
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc5280
-from pyasn1_modules import rfc4055
+from pyasn1_modules import pem, rfc4055, rfc5280
 
 
 class PSSDefautTestCase(unittest.TestCase):

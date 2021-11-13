@@ -9,16 +9,11 @@
 import sys
 import unittest
 
-from pyasn1.type import univ
-
 from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
+from pyasn1.type import univ
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc3058
-from pyasn1_modules import rfc5280
-from pyasn1_modules import rfc5652
-from pyasn1_modules import rfc5751
+from pyasn1_modules import pem, rfc3058, rfc5280, rfc5652, rfc5751
 
 
 class EnvelopedDataTestCase(unittest.TestCase):

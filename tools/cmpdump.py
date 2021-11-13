@@ -11,11 +11,9 @@
 import sys
 
 from pyasn1 import debug
-from pyasn1.codec.der import decoder
-from pyasn1.codec.der import encoder
+from pyasn1.codec.der import decoder, encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc4210
+from pyasn1_modules import pem, rfc4210
 
 if len(sys.argv) == 2 and sys.argv[1] == '-d':
     debug.setLogger(debug.Debug('all'))

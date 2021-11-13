@@ -11,9 +11,7 @@ import unittest
 from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc5280
-from pyasn1_modules import rfc7585
+from pyasn1_modules import pem, rfc5280, rfc7585
 
 
 class NAIRealmCertTestCase(unittest.TestCase):

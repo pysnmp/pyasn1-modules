@@ -10,8 +10,7 @@
 import socket
 import sys
 
-from pyasn1.codec.ber import decoder
-from pyasn1.codec.ber import encoder
+from pyasn1.codec.ber import decoder, encoder
 
 from pyasn1_modules import rfc1157
 

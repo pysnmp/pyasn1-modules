@@ -12,10 +12,7 @@ from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.compat.octets import str2octs
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc5480
-from pyasn1_modules import rfc5280
-from pyasn1_modules import rfc3770
+from pyasn1_modules import pem, rfc3770, rfc5280, rfc5480
 
 
 class CertificateTestCase(unittest.TestCase):

@@ -12,11 +12,7 @@ from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 from pyasn1.type import univ
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc2985
-from pyasn1_modules import rfc5652
-from pyasn1_modules import rfc5280
-from pyasn1_modules import rfc7906
+from pyasn1_modules import pem, rfc2985, rfc5280, rfc5652, rfc7906
 
 
 class AttributeSetTestCase(unittest.TestCase):

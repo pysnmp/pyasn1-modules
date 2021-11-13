@@ -10,10 +10,7 @@ import unittest
 from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc4055
-from pyasn1_modules import rfc5652
-from pyasn1_modules import rfc5126
+from pyasn1_modules import pem, rfc4055, rfc5126, rfc5652
 
 
 class SignedAttributesTestCase(unittest.TestCase):

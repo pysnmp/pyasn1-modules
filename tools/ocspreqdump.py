@@ -10,11 +10,9 @@
 #
 import sys
 
-from pyasn1.codec.der import decoder
-from pyasn1.codec.der import encoder
+from pyasn1.codec.der import decoder, encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc2560
+from pyasn1_modules import pem, rfc2560
 
 if len(sys.argv) != 1:
     print("""Usage:

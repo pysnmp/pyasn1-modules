@@ -10,9 +10,7 @@ import unittest
 from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc5751
-from pyasn1_modules import rfc8692
+from pyasn1_modules import pem, rfc5751, rfc8692
 
 
 class AlgorithmIdentifierTestCase(unittest.TestCase):

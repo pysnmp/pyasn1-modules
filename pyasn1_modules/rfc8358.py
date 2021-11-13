@@ -16,7 +16,6 @@ from pyasn1.type import univ
 
 from pyasn1_modules import rfc5652
 
-
 id_ct = univ.ObjectIdentifier('1.2.840.113549.1.9.16.1')
 
 id_ct_asciiTextWithCRLF = id_ct + (27, )

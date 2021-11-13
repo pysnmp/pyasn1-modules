@@ -16,7 +16,6 @@ from pyasn1.type import univ
 
 from pyasn1_modules import rfc5280
 
-
 # Device Owner Attribute
 
 id_deviceOwner = univ.ObjectIdentifier((2, 16, 840, 1, 101, 2, 1, 5, 69))

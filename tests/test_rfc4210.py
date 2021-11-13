@@ -10,8 +10,7 @@ import unittest
 from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc4210
+from pyasn1_modules import pem, rfc4210
 
 
 class PKIMessageTestCase(unittest.TestCase):

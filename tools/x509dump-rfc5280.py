@@ -12,11 +12,9 @@
 #
 import sys
 
-from pyasn1.codec.der import decoder
-from pyasn1.codec.der import encoder
+from pyasn1.codec.der import decoder, encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc5280
+from pyasn1_modules import pem, rfc5280
 
 if len(sys.argv) != 1:
     print("""Usage:

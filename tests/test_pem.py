@@ -8,6 +8,7 @@ import sys
 import unittest
 
 from pyasn1.compat.octets import ints2octs
+
 from pyasn1_modules import pem
 
 

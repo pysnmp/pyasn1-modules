@@ -10,9 +10,7 @@ import unittest
 from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc5652
-from pyasn1_modules import rfc6482
+from pyasn1_modules import pem, rfc5652, rfc6482
 
 
 class RPKIROATestCase(unittest.TestCase):

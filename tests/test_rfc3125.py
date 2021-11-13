@@ -12,9 +12,7 @@ import unittest
 from pyasn1.codec.der.decoder import decode as der_decoder
 from pyasn1.codec.der.encoder import encode as der_encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc2985
-from pyasn1_modules import rfc3125
+from pyasn1_modules import pem, rfc2985, rfc3125
 
 
 class SignaturePolicyTestCase(unittest.TestCase):

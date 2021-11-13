@@ -11,9 +11,7 @@ import unittest
 from pyasn1.codec.der import decoder as der_decoder
 from pyasn1.codec.der import encoder as der_encoder
 
-from pyasn1_modules import pem
-from pyasn1_modules import rfc5208
-from pyasn1_modules import rfc8410
+from pyasn1_modules import pem, rfc5208, rfc8410
 
 
 class PrivateKeyTestCase(unittest.TestCase):
