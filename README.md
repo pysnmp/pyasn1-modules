@@ -1,11 +1,11 @@
 
 ASN.1 modules for Python
 ------------------------
-[![PyPI](https://img.shields.io/pypi/v/pyasn1-modules.svg?maxAge=2592000)](https://pypi.org/project/pyasn1-modules)
-[![Python Versions](https://img.shields.io/pypi/pyversions/pyasn1-modules.svg)](https://pypi.org/project/pyasn1-modules/)
-[![Build status](https://travis-ci.org/etingof/pyasn1-modules.svg?branch=master)](https://travis-ci.org/etingof/pyasn1-modules)
-[![Coverage Status](https://img.shields.io/codecov/c/github/etingof/pyasn1-modules.svg)](https://codecov.io/github/etingof/pyasn1-modules/)
-[![GitHub license](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/etingof/pyasn1-modules/master/LICENSE.txt)
+[![PyPI](https://img.shields.io/pypi/v/pysnmp-pyasn1-modules.svg?maxAge=2592000)](https://pypi.org/project/pysnmp-pyasn1-modules)
+[![Python Versions](https://img.shields.io/pypi/pyversions/pysnmp-pyasn1-modules.svg)](https://pypi.org/project/pysnmp-pyasn1-modules/)
+[![CI](https://github.com/pysnmp/pyasn1-modules/actions/workflows/build-test-release.yml/badge.svg)](https://github.com/pysnmp/pyasn1-modules/actions/workflows/build-test-release.yml)
+[![Coverage Status](https://img.shields.io/codecov/c/github/pysnmp/pyasn1-modules.svg)](https://codecov.io/github/pysnmp/pyasn1-modules/)
+[![GitHub license](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/pysnmp/pyasn1-modules/master/LICENSE.txt)
 
 The `pyasn1-modules` package contains a collection of
 [ASN.1](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-X.208-198811-W!!PDF-E&type=items)
