@@ -52,7 +52,7 @@ def mkOcspRequest(issuerCert, userCert):
     userTbsCertificate = userCert.getComponentByName("tbsCertificate")
     userIssuer = userTbsCertificate.getComponentByName("issuer")
 
-    assert issuerSubject == userIssuer, "%s\n%s" % (
+    assert issuerSubject == userIssuer, "{}\n{}".format(
         issuerSubject.prettyPrint(),
         userIssuer.prettyPrint(),
     )

@@ -43,9 +43,7 @@ def readPemBlocksFromFile(fileObj, *markers):
             if sys.version_info[0] <= 2:
                 substrate = "".join([base64.b64decode(x) for x in certLines])
             else:
-                substrate = "".encode().join(
-                    [base64.b64decode(x.encode()) for x in certLines]
-                )
+                substrate = b"".join([base64.b64decode(x.encode()) for x in certLines])
             break
     return idx, substrate
 

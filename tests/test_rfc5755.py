@@ -200,7 +200,7 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
 
                         for cat in attr["values"][0]["securityCategories"]:
                             self.assertEqual(catid, cat["type"])
-                            self.assertIn(u"USE ONLY", cat["value"][0])
+                            self.assertIn("USE ONLY", cat["value"][0])
 
                             clearance_found = True
 

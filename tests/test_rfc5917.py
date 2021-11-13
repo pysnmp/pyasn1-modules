@@ -51,7 +51,7 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         cs = rfc5917.DirectoryString()
-        cs["utf8String"] = u"Human Resources Department"
+        cs["utf8String"] = "Human Resources Department"
         encoded_cs = der_encoder(cs)
 
         clearance_sponsor_found = False
@@ -105,7 +105,7 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
 
                 for attr in ev:
                     if attr["type"] == rfc5917.id_clearanceSponsor:
-                        hrd = u"Human Resources Department"
+                        hrd = "Human Resources Department"
 
                         self.assertEqual(hrd, attr["values"][0]["utf8String"])
 

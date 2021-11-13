@@ -39,8 +39,8 @@ class EAITestCase(unittest.TestCase):
         self.assertFalse(rest)
         self.assertTrue(eai.prettyPrint())
         self.assertEqual(asn1Object["otherName"]["value"], der_encoder(eai))
-        self.assertEqual(u"\u8001", eai[0])
-        self.assertEqual(u"\u5E2B", eai[1])
+        self.assertEqual("\u8001", eai[0])
+        self.assertEqual("\u5E2B", eai[1])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
@@ -55,9 +55,9 @@ class EAITestCase(unittest.TestCase):
         self.assertEqual(
             rfc8398.id_on_SmtpUTF8Mailbox, asn1Object["otherName"]["type-id"]
         )
-        self.assertEqual(u"\u8001", asn1Object["otherName"]["value"][0])
+        self.assertEqual("\u8001", asn1Object["otherName"]["value"][0])
 
-        self.assertEqual(u"\u5E2B", asn1Object["otherName"]["value"][1])
+        self.assertEqual("\u5E2B", asn1Object["otherName"]["value"][1])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
