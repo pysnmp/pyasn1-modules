@@ -129,19 +129,19 @@ iPxQyqz7LIQe9/5ynJV5/CPUDBL9QK2vSCOQaihWCg==
         layers = {
             rfc5652.id_ct_contentInfo: rfc5652.ContentInfo(),
             rfc5652.id_signedData: rfc5652.SignedData(),
-            rfc5934.id_ct_TAMP_statusResponse: rfc5934.TAMPStatusResponse()
+            rfc5934.id_ct_TAMP_statusResponse: rfc5934.TAMPStatusResponse(),
         }
 
         getNextLayer = {
-            rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContentType'],
-            rfc5934.id_ct_TAMP_statusResponse: lambda x: None
+            rfc5652.id_ct_contentInfo: lambda x: x["contentType"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContentType"],
+            rfc5934.id_ct_TAMP_statusResponse: lambda x: None,
         }
 
         getNextSubstrate = {
-            rfc5652.id_ct_contentInfo: lambda x: x['content'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContent'],
-            rfc5934.id_ct_TAMP_statusResponse: lambda x: None
+            rfc5652.id_ct_contentInfo: lambda x: x["content"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContent"],
+            rfc5934.id_ct_TAMP_statusResponse: lambda x: None,
         }
 
         next_layer = rfc5652.id_ct_contentInfo
@@ -158,35 +158,37 @@ iPxQyqz7LIQe9/5ynJV5/CPUDBL9QK2vSCOQaihWCg==
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.tsr_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True)
+            substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        eci = asn1Object['content']['encapContentInfo']
+        eci = asn1Object["content"]["encapContentInfo"]
 
-        self.assertIn(eci['eContentType'], rfc5652.cmsContentTypesMap)
-        self.assertEqual(rfc5934.id_ct_TAMP_statusResponse, eci['eContentType'])
+        self.assertIn(eci["eContentType"], rfc5652.cmsContentTypesMap)
+        self.assertEqual(rfc5934.id_ct_TAMP_statusResponse, eci["eContentType"])
 
         tsr, rest = der_decoder(
-            eci['eContent'],
-            asn1Spec=rfc5652.cmsContentTypesMap[eci['eContentType']],
-            decodeOpenTypes=True)
+            eci["eContent"],
+            asn1Spec=rfc5652.cmsContentTypesMap[eci["eContentType"]],
+            decodeOpenTypes=True,
+        )
 
         self.assertFalse(rest)
         self.assertTrue(tsr.prettyPrint())
-        self.assertEqual(eci['eContent'], der_encoder(tsr))
-        self.assertEqual(2, tsr['version'])
-        self.assertEqual(univ.Null(""), tsr['query']['target'])
-        self.assertEqual(1568307071, tsr['query']['seqNum'])
-        self.assertFalse(tsr['usesApex'])
+        self.assertEqual(eci["eContent"], der_encoder(tsr))
+        self.assertEqual(2, tsr["version"])
+        self.assertEqual(univ.Null(""), tsr["query"]["target"])
+        self.assertEqual(1568307071, tsr["query"]["seqNum"])
+        self.assertFalse(tsr["usesApex"])
 
         count = 0
 
-        for tai in tsr['response']['verboseResponse']['taInfo']:
+        for tai in tsr["response"]["verboseResponse"]["taInfo"]:
             count += 1
-            self.assertEqual(1, tai['taInfo']['version'])
+            self.assertEqual(1, tai["taInfo"]["version"])
 
         self.assertEqual(3, count)
 
@@ -234,19 +236,19 @@ ZidB8vj4jIZT3S2gqWhtBLMUc11j+kWlXEZEigSL8WgCbAu7lqhItMwz2dy4C5aAWq8r"""
         layers = {
             rfc5652.id_ct_contentInfo: rfc5652.ContentInfo(),
             rfc5652.id_signedData: rfc5652.SignedData(),
-            rfc5934.id_ct_TAMP_update: rfc5934.TAMPUpdate()
+            rfc5934.id_ct_TAMP_update: rfc5934.TAMPUpdate(),
         }
 
         getNextLayer = {
-            rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContentType'],
-            rfc5934.id_ct_TAMP_update: lambda x: None
+            rfc5652.id_ct_contentInfo: lambda x: x["contentType"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContentType"],
+            rfc5934.id_ct_TAMP_update: lambda x: None,
         }
 
         getNextSubstrate = {
-            rfc5652.id_ct_contentInfo: lambda x: x['content'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContent'],
-            rfc5934.id_ct_TAMP_update: lambda x: None
+            rfc5652.id_ct_contentInfo: lambda x: x["content"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContent"],
+            rfc5934.id_ct_TAMP_update: lambda x: None,
         }
 
         next_layer = rfc5652.id_ct_contentInfo
@@ -264,33 +266,34 @@ ZidB8vj4jIZT3S2gqWhtBLMUc11j+kWlXEZEigSL8WgCbAu7lqhItMwz2dy4C5aAWq8r"""
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.tau_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=rfc5652.ContentInfo(),
-            decodeOpenTypes=True)
+            substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        eci = asn1Object['content']['encapContentInfo']
-        self.assertIn(eci['eContentType'], rfc5652.cmsContentTypesMap)
-        self.assertEqual(rfc5934.id_ct_TAMP_update, eci['eContentType'])
+        eci = asn1Object["content"]["encapContentInfo"]
+        self.assertIn(eci["eContentType"], rfc5652.cmsContentTypesMap)
+        self.assertEqual(rfc5934.id_ct_TAMP_update, eci["eContentType"])
 
         tau, rest = der_decoder(
-            eci['eContent'],
-            asn1Spec=rfc5652.cmsContentTypesMap[eci['eContentType']],
-            decodeOpenTypes=True)
+            eci["eContent"],
+            asn1Spec=rfc5652.cmsContentTypesMap[eci["eContentType"]],
+            decodeOpenTypes=True,
+        )
 
         self.assertFalse(rest)
         self.assertTrue(tau.prettyPrint())
-        self.assertEqual(eci['eContent'], der_encoder(tau))
-        self.assertEqual(2, tau['version'])
-        self.assertEqual(univ.Null(""), tau['msgRef']['target'])
-        self.assertEqual(1568307088, tau['msgRef']['seqNum'])
-        self.assertEqual(1, len(tau['updates']))
+        self.assertEqual(eci["eContent"], der_encoder(tau))
+        self.assertEqual(2, tau["version"])
+        self.assertEqual(univ.Null(""), tau["msgRef"]["target"])
+        self.assertEqual(1568307088, tau["msgRef"]["seqNum"])
+        self.assertEqual(1, len(tau["updates"]))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

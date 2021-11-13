@@ -43,32 +43,31 @@ BwEwGwYJYIZIAWUDBAEuMA4EDMr+ur76ztut3sr4iIANmvLRbyFUf87+2bPvLQQMoOWSXMGE
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertEqual(
-            rfc5083.id_ct_authEnvelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5083.id_ct_authEnvelopedData, asn1Object["contentType"])
 
         aed, rest = der_decoder(
-            asn1Object['content'],
-            asn1Spec=rfc5083.AuthEnvelopedData())
+            asn1Object["content"], asn1Spec=rfc5083.AuthEnvelopedData()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(aed.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(aed))
-        self.assertEqual(0, aed['version'])
+        self.assertEqual(asn1Object["content"], der_encoder(aed))
+        self.assertEqual(0, aed["version"])
 
-        ri = aed['recipientInfos'][0]
-        self.assertEqual(rfc8696.id_ori_keyTransPSK, ri['ori']['oriType'])
+        ri = aed["recipientInfos"][0]
+        self.assertEqual(rfc8696.id_ori_keyTransPSK, ri["ori"]["oriType"])
 
         ktpsk, rest = der_decoder(
-            ri['ori']['oriValue'],
-            asn1Spec=rfc8696.KeyTransPSKRecipientInfo())
+            ri["ori"]["oriValue"], asn1Spec=rfc8696.KeyTransPSKRecipientInfo()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(ktpsk.prettyPrint())
-        self.assertEqual(ri['ori']['oriValue'], der_encoder(ktpsk))
-        self.assertEqual(0, ktpsk['version'])
+        self.assertEqual(ri["ori"]["oriValue"], der_encoder(ktpsk))
+        self.assertEqual(0, ktpsk["version"])
 
-        ktri = ktpsk['ktris'][0]
-        self.assertEqual(2, ktri['version'])
+        ktri = ktpsk["ktris"][0]
+        self.assertEqual(2, ktri["version"])
 
     def testOtherRecipientInfoMap(self):
         substrate = pem.readBase64fromText(self.key_trans_psk_pem_text)
@@ -77,28 +76,29 @@ BwEwGwYJYIZIAWUDBAEuMA4EDMr+ur76ztut3sr4iIANmvLRbyFUf87+2bPvLQQMoOWSXMGE
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertEqual(
-            rfc5083.id_ct_authEnvelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5083.id_ct_authEnvelopedData, asn1Object["contentType"])
 
         aed, rest = der_decoder(
-            asn1Object['content'],
-            asn1Spec=rfc5083.AuthEnvelopedData())
+            asn1Object["content"], asn1Spec=rfc5083.AuthEnvelopedData()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(aed.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(aed)) 
-        self.assertEqual(0, aed['version'])
+        self.assertEqual(asn1Object["content"], der_encoder(aed))
+        self.assertEqual(0, aed["version"])
 
-        ri = aed['recipientInfos'][0]
-        self.assertIn(ri['ori']['oriType'], rfc5652.otherRecipientInfoMap)
+        ri = aed["recipientInfos"][0]
+        self.assertIn(ri["ori"]["oriType"], rfc5652.otherRecipientInfoMap)
 
         ori, rest = der_decoder(
-            ri['ori']['oriValue'],
-            asn1Spec=rfc5652.otherRecipientInfoMap[ri['ori']['oriType']])
+            ri["ori"]["oriValue"],
+            asn1Spec=rfc5652.otherRecipientInfoMap[ri["ori"]["oriType"]],
+        )
 
         self.assertFalse(rest)
         self.assertTrue(ori.prettyPrint())
-        self.assertEqual(ri['ori']['oriValue'], der_encoder(ori))
+        self.assertEqual(ri["ori"]["oriValue"], der_encoder(ori))
+
 
 class KeyAgreePSKTestCase(unittest.TestCase):
     key_agree_psk_pem_text = """\
@@ -121,34 +121,34 @@ WylxlCbB/w==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertEqual(
-            rfc5083.id_ct_authEnvelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5083.id_ct_authEnvelopedData, asn1Object["contentType"])
 
         aed, rest = der_decoder(
-            asn1Object['content'],
-            asn1Spec=rfc5083.AuthEnvelopedData())
+            asn1Object["content"], asn1Spec=rfc5083.AuthEnvelopedData()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(aed.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(aed))
-        self.assertEqual(0, aed['version'])
+        self.assertEqual(asn1Object["content"], der_encoder(aed))
+        self.assertEqual(0, aed["version"])
 
-        ri = aed['recipientInfos'][0]
-        self.assertEqual(rfc8696.id_ori_keyAgreePSK, ri['ori']['oriType'])
+        ri = aed["recipientInfos"][0]
+        self.assertEqual(rfc8696.id_ori_keyAgreePSK, ri["ori"]["oriType"])
 
         kapsk, rest = der_decoder(
-            ri['ori']['oriValue'],
-            asn1Spec=rfc8696.KeyAgreePSKRecipientInfo())
+            ri["ori"]["oriValue"], asn1Spec=rfc8696.KeyAgreePSKRecipientInfo()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(kapsk.prettyPrint())
-        self.assertEqual(ri['ori']['oriValue'], der_encoder(kapsk))
-        self.assertEqual(0, kapsk['version'])
+        self.assertEqual(ri["ori"]["oriValue"], der_encoder(kapsk))
+        self.assertEqual(0, kapsk["version"])
 
-        rek = kapsk['recipientEncryptedKeys'][0]
-        ski = rek['rid']['rKeyId']['subjectKeyIdentifier']
+        rek = kapsk["recipientEncryptedKeys"][0]
+        ski = rek["rid"]["rKeyId"]["subjectKeyIdentifier"]
         expected_ski = univ.OctetString(
-            hexValue='e8218b98b8b7d86b5e9ebdc8aeb8c4ecdc05c529')
+            hexValue="e8218b98b8b7d86b5e9ebdc8aeb8c4ecdc05c529"
+        )
 
         self.assertEqual(expected_ski, ski)
 
@@ -159,31 +159,31 @@ WylxlCbB/w==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertEqual(
-            rfc5083.id_ct_authEnvelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5083.id_ct_authEnvelopedData, asn1Object["contentType"])
 
         aed, rest = der_decoder(
-            asn1Object['content'],
-            asn1Spec=rfc5083.AuthEnvelopedData())
+            asn1Object["content"], asn1Spec=rfc5083.AuthEnvelopedData()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(aed.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(aed))
-        self.assertEqual(0, aed['version'])
+        self.assertEqual(asn1Object["content"], der_encoder(aed))
+        self.assertEqual(0, aed["version"])
 
-        ri = aed['recipientInfos'][0]
-        self.assertIn(ri['ori']['oriType'], rfc5652.otherRecipientInfoMap)
+        ri = aed["recipientInfos"][0]
+        self.assertIn(ri["ori"]["oriType"], rfc5652.otherRecipientInfoMap)
 
         ori, rest = der_decoder(
-            ri['ori']['oriValue'],
-            asn1Spec=rfc5652.otherRecipientInfoMap[ri['ori']['oriType']])
+            ri["ori"]["oriValue"],
+            asn1Spec=rfc5652.otherRecipientInfoMap[ri["ori"]["oriType"]],
+        )
 
         self.assertFalse(rest)
         self.assertTrue(ori.prettyPrint())
-        self.assertEqual(ri['ori']['oriValue'], der_encoder(ori))
+        self.assertEqual(ri["ori"]["oriValue"], der_encoder(ori))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite)

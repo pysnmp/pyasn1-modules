@@ -27,28 +27,29 @@ class BinarySigningTimeTestCase(unittest.TestCase):
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc6019.id_aa_binarySigningTime, asn1Object['attrType'])
+        self.assertEqual(rfc6019.id_aa_binarySigningTime, asn1Object["attrType"])
 
         bintime, rest = der_decoder(
-            asn1Object['attrValues'][0], asn1Spec=rfc6019.BinaryTime())
+            asn1Object["attrValues"][0], asn1Spec=rfc6019.BinaryTime()
+        )
 
-        self.assertEqual(0x5cbf8654, bintime)
+        self.assertEqual(0x5CBF8654, bintime)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec,
-            decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertIn(asn1Object['attrType'], rfc5652.cmsAttributesMap)
-        self.assertEqual(0x5cbf8654, asn1Object['attrValues'][0])
+        self.assertIn(asn1Object["attrType"], rfc5652.cmsAttributesMap)
+        self.assertEqual(0x5CBF8654, asn1Object["attrValues"][0])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

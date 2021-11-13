@@ -46,31 +46,38 @@ FOuri/fKBe0=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         found_ppl = False
-        for extn in asn1Object['tbsCertificate']['extensions']:
-           if extn['extnID'] == rfc3820.id_pe_proxyCertInfo:
-               self.assertTrue(rfc3820.id_pe_proxyCertInfo in rfc5280.certificateExtensionsMap.keys())
-               pci, rest = der_decoder(
-                   extn['extnValue'],
-                   asn1Spec=rfc5280.certificateExtensionsMap[rfc3820.id_pe_proxyCertInfo])
-               self.assertFalse(rest)
-               self.assertTrue(pci.prettyPrint())
-               self.assertEqual(extn['extnValue'], der_encoder(pci))
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] == rfc3820.id_pe_proxyCertInfo:
+                self.assertTrue(
+                    rfc3820.id_pe_proxyCertInfo
+                    in rfc5280.certificateExtensionsMap.keys()
+                )
+                pci, rest = der_decoder(
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.certificateExtensionsMap[
+                        rfc3820.id_pe_proxyCertInfo
+                    ],
+                )
+                self.assertFalse(rest)
+                self.assertTrue(pci.prettyPrint())
+                self.assertEqual(extn["extnValue"], der_encoder(pci))
 
-               self.assertEqual(rfc3820.id_ppl_inheritAll, pci['proxyPolicy']['policyLanguage'])
-               found_ppl = True
+                self.assertEqual(
+                    rfc3820.id_ppl_inheritAll, pci["proxyPolicy"]["policyLanguage"]
+                )
+                found_ppl = True
 
         self.assertTrue(found_ppl)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

@@ -43,40 +43,39 @@ NmaF8Y2Sl/MgvC5tjs0Ck0/r3lsoLQ==
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(0, asn1Object['certificationRequestInfo']['version'])
+        self.assertEqual(0, asn1Object["certificationRequestInfo"]["version"])
 
-        for attr in asn1Object['certificationRequestInfo']['attributes']:
-            self.assertIn(
-                attr['attrType'], rfc6402.cmcControlAttributesMap)
+        for attr in asn1Object["certificationRequestInfo"]["attributes"]:
+            self.assertIn(attr["attrType"], rfc6402.cmcControlAttributesMap)
 
             av, rest = der_decoder(
-                attr['attrValues'][0],
-                rfc6402.cmcControlAttributesMap[attr['attrType']])
+                attr["attrValues"][0], rfc6402.cmcControlAttributesMap[attr["attrType"]]
+            )
 
             self.assertFalse(rest)
-            self.assertEqual(attr['attrValues'][0], der_encoder(av))
+            self.assertEqual(attr["attrValues"][0], der_encoder(av))
 
-            if attr['attrType'] == rfc7894.id_aa_otpChallenge:
-                self.assertEqual('90503846', av['printableString'])
+            if attr["attrType"] == rfc7894.id_aa_otpChallenge:
+                self.assertEqual("90503846", av["printableString"])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.otp_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        for attr in asn1Object['certificationRequestInfo']['attributes']:
-            self.assertIn(attr['attrType'], rfc6402.cmcControlAttributesMap)
-            if attr['attrType'] == rfc7894.id_aa_otpChallenge:
-                self.assertEqual(
-                    '90503846', attr['attrValues'][0]['printableString'])
+        for attr in asn1Object["certificationRequestInfo"]["attributes"]:
+            self.assertIn(attr["attrType"], rfc6402.cmcControlAttributesMap)
+            if attr["attrType"] == rfc7894.id_aa_otpChallenge:
+                self.assertEqual("90503846", attr["attrValues"][0]["printableString"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

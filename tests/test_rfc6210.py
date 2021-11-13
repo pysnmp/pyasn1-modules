@@ -40,31 +40,33 @@ EIbVbg2xql
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_ct_authData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_ct_authData, asn1Object["contentType"])
 
         ad, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.AuthenticatedData())
+            asn1Object["content"], asn1Spec=rfc5652.AuthenticatedData()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(ad.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(ad))
-        self.assertEqual(0, ad['version'])
+        self.assertEqual(asn1Object["content"], der_encoder(ad))
+        self.assertEqual(0, ad["version"])
         self.assertEqual(
-            rfc6210.id_alg_MD5_XOR_EXPERIMENT, ad['digestAlgorithm']['algorithm'])
+            rfc6210.id_alg_MD5_XOR_EXPERIMENT, ad["digestAlgorithm"]["algorithm"]
+        )
 
         mac_alg_p, rest = der_decoder(
-            ad['digestAlgorithm']['parameters'],
-            asn1Spec=rfc5280.algorithmIdentifierMap[ad['digestAlgorithm']['algorithm']])
+            ad["digestAlgorithm"]["parameters"],
+            asn1Spec=rfc5280.algorithmIdentifierMap[ad["digestAlgorithm"]["algorithm"]],
+        )
 
         self.assertFalse(rest)
         self.assertTrue(mac_alg_p.prettyPrint())
-        self.assertEqual(
-            ad['digestAlgorithm']['parameters'], der_encoder(mac_alg_p))
+        self.assertEqual(ad["digestAlgorithm"]["parameters"], der_encoder(mac_alg_p))
         self.assertEqual("0x01020304", mac_alg_p.prettyPrint()[:10])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

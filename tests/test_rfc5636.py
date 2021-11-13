@@ -52,25 +52,24 @@ Efe1LUIWVmbJ3HKtk8JTrWTg9iLVp+keqOWJfSEEUZXnyNIMt/SCONtZT+6SJQqwQV0C8AcR
 
         substrate = pem.readBase64fromText(self.pem_text)
 
-        layers = { }
+        layers = {}
         layers.update(rfc5652.cmsContentTypesMap)
 
         getNextLayer = {
-            rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContentType'],
-            rfc5636.id_kisa_tac_token: lambda x: None
+            rfc5652.id_ct_contentInfo: lambda x: x["contentType"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContentType"],
+            rfc5636.id_kisa_tac_token: lambda x: None,
         }
 
         getNextSubstrate = {
-            rfc5652.id_ct_contentInfo: lambda x: x['content'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContent'],
-            rfc5636.id_kisa_tac_token: lambda x: None
+            rfc5652.id_ct_contentInfo: lambda x: x["content"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContent"],
+            rfc5636.id_kisa_tac_token: lambda x: None,
         }
 
         next_layer = rfc5652.id_ct_contentInfo
         while next_layer:
-            asn1Object, rest = der_decoder(
-                substrate, asn1Spec=layers[next_layer])
+            asn1Object, rest = der_decoder(substrate, asn1Spec=layers[next_layer])
 
             self.assertFalse(rest)
             self.assertTrue(asn1Object.prettyPrint())
@@ -79,38 +78,38 @@ Efe1LUIWVmbJ3HKtk8JTrWTg9iLVp+keqOWJfSEEUZXnyNIMt/SCONtZT+6SJQqwQV0C8AcR
             substrate = getNextSubstrate[next_layer](asn1Object)
             next_layer = getNextLayer[next_layer](asn1Object)
 
-        self.assertEqual('2019', asn1Object['timeout'][:4])
-        self.assertEqual('5dcdf44e', asn1Object['userKey'].prettyPrint()[-8:])
+        self.assertEqual("2019", asn1Object["timeout"][:4])
+        self.assertEqual("5dcdf44e", asn1Object["userKey"].prettyPrint()[-8:])
 
     def testOpenTypes(self):
-        asn1Spec=rfc5652.ContentInfo()
+        asn1Spec = rfc5652.ContentInfo()
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        substrate = asn1Object['content']['encapContentInfo']['eContent']
-        oid = asn1Object['content']['encapContentInfo']['eContentType']
+        substrate = asn1Object["content"]["encapContentInfo"]["eContent"]
+        oid = asn1Object["content"]["encapContentInfo"]["eContentType"]
         self.assertIn(oid, rfc5652.cmsContentTypesMap)
 
         tac_token, rest = der_decoder(
-            substrate,
-            asn1Spec=rfc5652.cmsContentTypesMap[oid],
-            decodeOpenTypes=True)
+            substrate, asn1Spec=rfc5652.cmsContentTypesMap[oid], decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(tac_token.prettyPrint())
         self.assertEqual(substrate, der_encoder(tac_token))
 
-        self.assertEqual('2019', tac_token['timeout'][:4])
-        self.assertEqual('5dcdf44e', tac_token['userKey'].prettyPrint()[-8:])
+        self.assertEqual("2019", tac_token["timeout"][:4])
+        self.assertEqual("5dcdf44e", tac_token["userKey"].prettyPrint()[-8:])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

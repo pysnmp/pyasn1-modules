@@ -149,16 +149,17 @@ Kv0xuR3b3Le+ZqolT8wQELd5Mmw5JPofZ+O2cGNvet8tYwOKFjEA
     def testDerCodecDecodeOpenTypes(self):
 
         substrate = pem.readBase64fromText(self.pem_text_reordered)
-        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
-        self.assertEqual(
-            substrate, der_encoder(asn1Object, omitEmptyOptionals=False))
+        self.assertEqual(substrate, der_encoder(asn1Object, omitEmptyOptionals=False))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

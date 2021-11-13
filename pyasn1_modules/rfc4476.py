@@ -16,7 +16,7 @@ from pyasn1.type import char, constraint, namedtype, univ
 
 from pyasn1_modules import rfc5280
 
-MAX = float('inf')
+MAX = float("inf")
 
 
 # Imports from RFC 5280
@@ -45,6 +45,7 @@ id_qt_acunotice = id_qt + (5,)
 
 # Attribute Certificate Policies Extension
 
+
 class ACUserNotice(UserNotice):
     pass
 
@@ -59,10 +60,13 @@ class AcPolicyId(univ.ObjectIdentifier):
 
 class PolicyInformation(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('policyIdentifier', AcPolicyId()),
-        namedtype.OptionalNamedType('policyQualifiers',
+        namedtype.NamedType("policyIdentifier", AcPolicyId()),
+        namedtype.OptionalNamedType(
+            "policyQualifiers",
             univ.SequenceOf(componentType=PolicyQualifierInfo()).subtype(
-                subtypeSpec=constraint.ValueSizeConstraint(1, MAX)))
+                subtypeSpec=constraint.ValueSizeConstraint(1, MAX)
+            ),
+        ),
     )
 
 

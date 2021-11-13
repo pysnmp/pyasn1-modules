@@ -39,39 +39,38 @@ l3M5uQIgGxpbAXOt/o1xtyhEGLNUBE7ObgQpm7tHMMQGUHo4wV8=
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        spki = asn1Object['tbsCertificate']['subjectPublicKeyInfo']
-        algid = spki['algorithm']
+        spki = asn1Object["tbsCertificate"]["subjectPublicKeyInfo"]
+        algid = spki["algorithm"]
 
-        self.assertEqual(rfc5480.id_ecPublicKey, algid['algorithm'])
+        self.assertEqual(rfc5480.id_ecPublicKey, algid["algorithm"])
 
-        param, rest = der_decoder(
-            algid['parameters'], asn1Spec=rfc5480.ECParameters())
+        param, rest = der_decoder(algid["parameters"], asn1Spec=rfc5480.ECParameters())
 
         self.assertFalse(rest)
         self.assertTrue(param.prettyPrint())
-        self.assertEqual(algid['parameters'], der_encoder(param))
+        self.assertEqual(algid["parameters"], der_encoder(param))
 
-        self.assertEqual(rfc5639.brainpoolP256r1, param['namedCurve'])
+        self.assertEqual(rfc5639.brainpoolP256r1, param["namedCurve"])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.brainpool_ec_cert_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-    
-        spki = asn1Object['tbsCertificate']['subjectPublicKeyInfo']
-        algid = spki['algorithm']
 
-        self.assertEqual(rfc5480.id_ecPublicKey, algid['algorithm'])
-        self.assertEqual(
-            rfc5639.brainpoolP256r1, algid['parameters']['namedCurve'])
+        spki = asn1Object["tbsCertificate"]["subjectPublicKeyInfo"]
+        algid = spki["algorithm"]
+
+        self.assertEqual(rfc5480.id_ecPublicKey, algid["algorithm"])
+        self.assertEqual(rfc5639.brainpoolP256r1, algid["parameters"]["namedCurve"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

@@ -87,25 +87,25 @@ tAGXsYdcuQpglUngmo/FV4Z9qjIDkYQ=
 
         extn_list = []
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            extn_list.append(extn['extnID'])
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            extn_list.append(extn["extnID"])
 
-            if extn['extnID'] == rfc7773.id_ce_authContext:
-                s = extn['extnValue']
+            if extn["extnID"] == rfc7773.id_ce_authContext:
+                s = extn["extnValue"]
                 acs, rest = der_decoder(
-                    s, asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                    s, asn1Spec=rfc5280.certificateExtensionsMap[extn["extnID"]]
+                )
                 self.assertFalse(rest)
                 self.assertTrue(acs.prettyPrint())
                 self.assertEqual(s, der_encoder(acs))
-                self.assertIn('id.elegnamnden.se', acs[0]['contextType'])
-                self.assertIn(
-                    'AuthContextInfo IdentityProvider', acs[0]['contextInfo'])
+                self.assertIn("id.elegnamnden.se", acs[0]["contextType"])
+                self.assertIn("AuthContextInfo IdentityProvider", acs[0]["contextInfo"])
 
         self.assertIn(rfc7773.id_ce_authContext, extn_list)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

@@ -58,33 +58,33 @@ izaUuU1EEwgOMELjeFL62Ssvq8X+x6hZFCLygI7GNeitlblNhCXhFFurqMs=
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         extn_list = []
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            extn_list.append(extn['extnID'])
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            extn_list.append(extn["extnID"])
 
-            if extn['extnID'] == rfc8520.id_pe_mudsigner:
+            if extn["extnID"] == rfc8520.id_pe_mudsigner:
                 mudsigner, rest = der_decoder(
-                    extn['extnValue'], rfc8520.MUDsignerSyntax())
+                    extn["extnValue"], rfc8520.MUDsignerSyntax()
+                )
 
-                self.assertEqual(extn['extnValue'], der_encoder(mudsigner))
+                self.assertEqual(extn["extnValue"], der_encoder(mudsigner))
 
                 c = rfc5280.X520countryName(value="CH")
 
-                self.assertEqual(mudsigner[0][0][0]['value'], der_encoder(c))
+                self.assertEqual(mudsigner[0][0][0]["value"], der_encoder(c))
 
                 e = rfc5280.EmailAddress(value="ascertia@ofcourseimright.com")
 
-                self.assertEqual(mudsigner[0][1][0]['value'], der_encoder(e))
+                self.assertEqual(mudsigner[0][1][0]["value"], der_encoder(e))
 
                 cn = rfc5280.X520CommonName()
-                cn['printableString'] = "Eliot Lear"
+                cn["printableString"] = "Eliot Lear"
 
-                self.assertEqual(mudsigner[0][2][0]['value'], der_encoder(cn))
+                self.assertEqual(mudsigner[0][2][0]["value"], der_encoder(cn))
 
-            if extn['extnID'] == rfc8520.id_pe_mud_url:
-                mudurl, rest = der_decoder(
-                    extn['extnValue'], rfc8520.MUDURLSyntax())
+            if extn["extnID"] == rfc8520.id_pe_mud_url:
+                mudurl, rest = der_decoder(extn["extnValue"], rfc8520.MUDURLSyntax())
 
-                self.assertEqual(extn['extnValue'], der_encoder(mudurl))
+                self.assertEqual(extn["extnValue"], der_encoder(mudurl))
                 self.assertEqual(".json", mudurl[-5:])
 
         self.assertIn(rfc8520.id_pe_mudsigner, extn_list)
@@ -98,16 +98,17 @@ izaUuU1EEwgOMELjeFL62Ssvq8X+x6hZFCLygI7GNeitlblNhCXhFFurqMs=
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] in rfc5280.certificateExtensionsMap.keys():
                 extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.certificateExtensionsMap[extn["extnID"]],
+                )
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

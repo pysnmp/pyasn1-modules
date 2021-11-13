@@ -59,56 +59,55 @@ wwqly11MDVPAb0tcQW20auWmCNkXd52jQJ7PXR6kr5I=
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_envelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_envelopedData, asn1Object["contentType"])
 
-        ed, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.EnvelopedData())
+        ed, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.EnvelopedData())
         self.assertFalse(rest)
         self.assertTrue(ed.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(ed))
+        self.assertEqual(asn1Object["content"], der_encoder(ed))
 
-        kwa = ed['recipientInfos'][0]['kekri']['keyEncryptionAlgorithm']
-        self.assertEqual(rfc3370.id_alg_CMSRC2wrap, kwa['algorithm'])
-        kwa_param, rest = der_decoder(
-            kwa['parameters'], rfc3370.RC2wrapParameter())
+        kwa = ed["recipientInfos"][0]["kekri"]["keyEncryptionAlgorithm"]
+        self.assertEqual(rfc3370.id_alg_CMSRC2wrap, kwa["algorithm"])
+        kwa_param, rest = der_decoder(kwa["parameters"], rfc3370.RC2wrapParameter())
         self.assertFalse(rest)
         self.assertTrue(kwa_param.prettyPrint())
-        self.assertEqual(kwa['parameters'], der_encoder(kwa_param)) 
+        self.assertEqual(kwa["parameters"], der_encoder(kwa_param))
         self.assertEqual(58, kwa_param)
 
-        cea = ed['encryptedContentInfo']['contentEncryptionAlgorithm']
-        self.assertEqual(rfc3370.rc2CBC, cea['algorithm'])
-        param, rest = der_decoder(
-            cea['parameters'], rfc3370.RC2CBCParameter())
+        cea = ed["encryptedContentInfo"]["contentEncryptionAlgorithm"]
+        self.assertEqual(rfc3370.rc2CBC, cea["algorithm"])
+        param, rest = der_decoder(cea["parameters"], rfc3370.RC2CBCParameter())
         self.assertFalse(rest)
         self.assertTrue(param.prettyPrint())
-        self.assertEqual(cea['parameters'], der_encoder(param))
+        self.assertEqual(cea["parameters"], der_encoder(param))
 
-        iv = univ.OctetString(hexValue='424f4755535f4956')
-        self.assertEqual(iv, param['iv'])
-        self.assertEqual(58, param['rc2ParameterVersion'])
+        iv = univ.OctetString(hexValue="424f4755535f4956")
+        self.assertEqual(iv, param["iv"])
+        self.assertEqual(58, param["rc2ParameterVersion"])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.env_data_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertTrue(asn1Object['contentType'] in rfc5652.cmsContentTypesMap.keys())
+        self.assertTrue(asn1Object["contentType"] in rfc5652.cmsContentTypesMap.keys())
 
-        ri0 = asn1Object['content']['recipientInfos'][0]
-        kwa = ri0['kekri']['keyEncryptionAlgorithm']
-        self.assertEqual(rfc3370.id_alg_CMSRC2wrap, kwa['algorithm'])
-        self.assertEqual(58, kwa['parameters'])
+        ri0 = asn1Object["content"]["recipientInfos"][0]
+        kwa = ri0["kekri"]["keyEncryptionAlgorithm"]
+        self.assertEqual(rfc3370.id_alg_CMSRC2wrap, kwa["algorithm"])
+        self.assertEqual(58, kwa["parameters"])
 
-        eci = asn1Object['content']['encryptedContentInfo']
-        cea = eci['contentEncryptionAlgorithm']
-        self.assertEqual(rfc3370.rc2CBC, cea['algorithm'])
+        eci = asn1Object["content"]["encryptedContentInfo"]
+        cea = eci["contentEncryptionAlgorithm"]
+        self.assertEqual(rfc3370.rc2CBC, cea["algorithm"])
 
-        iv = univ.OctetString(hexValue='424f4755535f4956')
-        self.assertEqual(iv, cea['parameters']['iv'])
-        self.assertEqual(58, cea['parameters']['rc2ParameterVersion'])
+        iv = univ.OctetString(hexValue="424f4755535f4956")
+        self.assertEqual(iv, cea["parameters"]["iv"])
+        self.assertEqual(58, cea["parameters"]["rc2ParameterVersion"])
+
 
 class DSAPublicKeyTestCase(unittest.TestCase):
     dsa_cert_pem_text = """\
@@ -133,6 +132,7 @@ gcK+MB8GA1UdIwQYMBaAFM1IZQGDsqYHWwb+I4EMxHPk0bU4MAsGCWCGSAFlAwQD
 AgNHADBEAiBBRbfMzLi7+SVyO8SM3xxwUsMf/k1B+Nkvf1kBTfCfGwIgSAx/6mI+
 pNqdXqZZGESXy1MT1aBc4ynPGLFUr2r7cPY=
 """
+
     def setUp(self):
         self.asn1Spec = rfc5280.Certificate()
 
@@ -143,9 +143,9 @@ pNqdXqZZGESXy1MT1aBc4ynPGLFUr2r7cPY=
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        spki = asn1Object['tbsCertificate']['subjectPublicKeyInfo']
-        self.assertEqual(rfc3370.id_dsa, spki['algorithm']['algorithm'])
-        pk_substrate = spki['subjectPublicKey'].asOctets()
+        spki = asn1Object["tbsCertificate"]["subjectPublicKeyInfo"]
+        self.assertEqual(rfc3370.id_dsa, spki["algorithm"]["algorithm"])
+        pk_substrate = spki["subjectPublicKey"].asOctets()
 
         pk, rest = der_decoder(pk_substrate, asn1Spec=rfc3370.Dss_Pub_Key())
         self.assertFalse(rest)
@@ -153,6 +153,7 @@ pNqdXqZZGESXy1MT1aBc4ynPGLFUr2r7cPY=
         self.assertEqual(pk_substrate, der_encoder(pk))
 
         self.assertEqual(48, pk % 1024)
+
 
 class SMIMECapabilitiesTestCase(unittest.TestCase):
     smime_capabilities_pem_text = """\
@@ -173,31 +174,36 @@ BwIBOg==
 
         found_wrap_alg_param = False
         for cap in asn1Object:
-            if cap['capabilityID'] in rfc5751.smimeCapabilityMap.keys():
-                if cap['parameters'].hasValue():
+            if cap["capabilityID"] in rfc5751.smimeCapabilityMap.keys():
+                if cap["parameters"].hasValue():
                     param, rest = der_decoder(
-                        cap['parameters'],
-                        asn1Spec=rfc5751.smimeCapabilityMap[cap['capabilityID']])
+                        cap["parameters"],
+                        asn1Spec=rfc5751.smimeCapabilityMap[cap["capabilityID"]],
+                    )
                     self.assertFalse(rest)
                     self.assertTrue(param.prettyPrint())
-                    self.assertEqual(cap['parameters'], der_encoder(param))
+                    self.assertEqual(cap["parameters"], der_encoder(param))
 
-                    if cap['capabilityID'] == rfc3370.id_alg_ESDH:
+                    if cap["capabilityID"] == rfc3370.id_alg_ESDH:
                         kwa, rest = der_decoder(
-                            cap['parameters'],
-                            asn1Spec=rfc5751.smimeCapabilityMap[cap['capabilityID']])
+                            cap["parameters"],
+                            asn1Spec=rfc5751.smimeCapabilityMap[cap["capabilityID"]],
+                        )
                         self.assertFalse(rest)
                         self.assertTrue(kwa.prettyPrint())
-                        self.assertEqual(cap['parameters'], der_encoder(kwa))
+                        self.assertEqual(cap["parameters"], der_encoder(kwa))
 
-                        self.assertTrue(kwa['algorithm'] in rfc5280.algorithmIdentifierMap.keys())
-                        self.assertEqual(rfc3370.id_alg_CMSRC2wrap, kwa['algorithm'])
+                        self.assertTrue(
+                            kwa["algorithm"] in rfc5280.algorithmIdentifierMap.keys()
+                        )
+                        self.assertEqual(rfc3370.id_alg_CMSRC2wrap, kwa["algorithm"])
                         kwa_p, rest = der_decoder(
-                            kwa['parameters'],
-                            asn1Spec=rfc5280.algorithmIdentifierMap[kwa['algorithm']])
+                            kwa["parameters"],
+                            asn1Spec=rfc5280.algorithmIdentifierMap[kwa["algorithm"]],
+                        )
                         self.assertFalse(rest)
                         self.assertTrue(kwa_p.prettyPrint())
-                        self.assertEqual(kwa['parameters'], der_encoder(kwa_p))
+                        self.assertEqual(kwa["parameters"], der_encoder(kwa_p))
                         self.assertEqual(58, kwa_p)
                         found_wrap_alg_param = True
 
@@ -206,16 +212,19 @@ BwIBOg==
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         found_wrap_alg_param = False
         for cap in asn1Object:
-            if cap['capabilityID'] == rfc3370.id_alg_ESDH:
-                self.assertEqual(rfc3370.id_alg_CMSRC2wrap, cap['parameters']['algorithm'])
-                self.assertEqual(58, cap['parameters']['parameters'])
+            if cap["capabilityID"] == rfc3370.id_alg_ESDH:
+                self.assertEqual(
+                    rfc3370.id_alg_CMSRC2wrap, cap["parameters"]["algorithm"]
+                )
+                self.assertEqual(58, cap["parameters"]["parameters"])
                 found_wrap_alg_param = True
 
         self.assertTrue(found_wrap_alg_param)
@@ -223,7 +232,6 @@ BwIBOg==
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())
-

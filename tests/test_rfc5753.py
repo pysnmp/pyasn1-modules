@@ -61,32 +61,33 @@ ns9dHqSvkg==
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_envelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_envelopedData, asn1Object["contentType"])
 
-        ed, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.EnvelopedData())
+        ed, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.EnvelopedData())
         self.assertFalse(rest)
         self.assertTrue(ed.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(ed))
+        self.assertEqual(asn1Object["content"], der_encoder(ed))
 
         opk_ai_p = rfc5480.ECParameters()
-        opk_ai_p['namedCurve'] = rfc5480.secp384r1
+        opk_ai_p["namedCurve"] = rfc5480.secp384r1
 
         kwai = rfc5753.KeyWrapAlgorithm()
-        kwai['algorithm'] = rfc3565.id_aes256_wrap
+        kwai["algorithm"] = rfc3565.id_aes256_wrap
 
         ukm_found = False
-        self.assertEqual(ed['version'], rfc5652.CMSVersion(value=2))
-        for ri in ed['recipientInfos']:
-            self.assertEqual(ri['kari']['version'], rfc5652.CMSVersion(value=3))
-            opk_alg = ri['kari']['originator']['originatorKey']['algorithm']
-            self.assertEqual(opk_alg['algorithm'], rfc5753.id_ecPublicKey)
-            self.assertEqual(opk_alg['parameters'], der_encoder(opk_ai_p))
-            kek_alg = ri['kari']['keyEncryptionAlgorithm']
-            self.assertEqual(kek_alg['algorithm'], rfc5753.dhSinglePass_stdDH_sha384kdf_scheme)
-            self.assertEqual(kek_alg['parameters'], der_encoder(kwai))
-            ukm = ri['kari']['ukm']
-            self.assertEqual(ukm, rfc5652.UserKeyingMaterial(hexValue='52464335373533'))
+        self.assertEqual(ed["version"], rfc5652.CMSVersion(value=2))
+        for ri in ed["recipientInfos"]:
+            self.assertEqual(ri["kari"]["version"], rfc5652.CMSVersion(value=3))
+            opk_alg = ri["kari"]["originator"]["originatorKey"]["algorithm"]
+            self.assertEqual(opk_alg["algorithm"], rfc5753.id_ecPublicKey)
+            self.assertEqual(opk_alg["parameters"], der_encoder(opk_ai_p))
+            kek_alg = ri["kari"]["keyEncryptionAlgorithm"]
+            self.assertEqual(
+                kek_alg["algorithm"], rfc5753.dhSinglePass_stdDH_sha384kdf_scheme
+            )
+            self.assertEqual(kek_alg["parameters"], der_encoder(kwai))
+            ukm = ri["kari"]["ukm"]
+            self.assertEqual(ukm, rfc5652.UserKeyingMaterial(hexValue="52464335373533"))
             ukm_found = True
 
         self.assertTrue(ukm_found)
@@ -94,25 +95,28 @@ ns9dHqSvkg==
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        assert asn1Object['contentType'] == rfc5652.id_envelopedData
-        ed = asn1Object['content']
+        assert asn1Object["contentType"] == rfc5652.id_envelopedData
+        ed = asn1Object["content"]
 
         ukm_found = False
-        self.assertEqual(ed['version'], rfc5652.CMSVersion(value=2))
-        for ri in ed['recipientInfos']:
-            self.assertEqual(ri['kari']['version'], rfc5652.CMSVersion(value=3))
-            opk_alg = ri['kari']['originator']['originatorKey']['algorithm']
-            self.assertEqual(opk_alg['algorithm'], rfc5753.id_ecPublicKey)
-            self.assertEqual(opk_alg['parameters']['namedCurve'], rfc5480.secp384r1)
-            kek_alg = ri['kari']['keyEncryptionAlgorithm']
-            self.assertEqual(kek_alg['algorithm'], rfc5753.dhSinglePass_stdDH_sha384kdf_scheme)
-            self.assertEqual(kek_alg['parameters']['algorithm'], rfc3565.id_aes256_wrap)
-            ukm = ri['kari']['ukm']
-            self.assertEqual(ukm, rfc5652.UserKeyingMaterial(hexValue='52464335373533'))
+        self.assertEqual(ed["version"], rfc5652.CMSVersion(value=2))
+        for ri in ed["recipientInfos"]:
+            self.assertEqual(ri["kari"]["version"], rfc5652.CMSVersion(value=3))
+            opk_alg = ri["kari"]["originator"]["originatorKey"]["algorithm"]
+            self.assertEqual(opk_alg["algorithm"], rfc5753.id_ecPublicKey)
+            self.assertEqual(opk_alg["parameters"]["namedCurve"], rfc5480.secp384r1)
+            kek_alg = ri["kari"]["keyEncryptionAlgorithm"]
+            self.assertEqual(
+                kek_alg["algorithm"], rfc5753.dhSinglePass_stdDH_sha384kdf_scheme
+            )
+            self.assertEqual(kek_alg["parameters"]["algorithm"], rfc3565.id_aes256_wrap)
+            ukm = ri["kari"]["ukm"]
+            self.assertEqual(ukm, rfc5652.UserKeyingMaterial(hexValue="52464335373533"))
             ukm_found = True
 
         self.assertTrue(ukm_found)
@@ -120,6 +124,6 @@ ns9dHqSvkg==
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

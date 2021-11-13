@@ -20,7 +20,8 @@ from pyasn1_modules import rfc5280, rfc5652
 
 # X.509 Extension for MUD URL
 
-id_pe_mud_url = univ.ObjectIdentifier('1.3.6.1.5.5.7.1.25')
+id_pe_mud_url = univ.ObjectIdentifier("1.3.6.1.5.5.7.1.25")
+
 
 class MUDURLSyntax(char.IA5String):
     pass
@@ -28,7 +29,8 @@ class MUDURLSyntax(char.IA5String):
 
 # X.509 Extension for MUD Signer
 
-id_pe_mudsigner = univ.ObjectIdentifier('1.3.6.1.5.5.7.1.30')
+id_pe_mudsigner = univ.ObjectIdentifier("1.3.6.1.5.5.7.1.30")
+
 
 class MUDsignerSyntax(rfc5280.Name):
     pass
@@ -36,7 +38,7 @@ class MUDsignerSyntax(rfc5280.Name):
 
 # Object Identifier for CMS Content Type for a MUD file
 
-id_ct_mudtype = univ.ObjectIdentifier('1.2.840.113549.1.9.16.1.41')
+id_ct_mudtype = univ.ObjectIdentifier("1.2.840.113549.1.9.16.1.41")
 
 
 # Map of Certificate Extension OIDs to Extensions added to the

@@ -66,19 +66,19 @@ hn1cAiAIfnI1FVrosL/94ZKfGW+xydYaelsPL+WBgqGvKuTMEg==
 
         other_cert_found = False
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] == rfc5697.id_pe_otherCerts:
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] == rfc5697.id_pe_otherCerts:
                 extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5697.OtherCertificates())
+                    extn["extnValue"], asn1Spec=rfc5697.OtherCertificates()
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
                 self.assertEqual(
-                    11939979568329289287,
-                    extnValue[0]['issuerSerial']['serialNumber'])
+                    11939979568329289287, extnValue[0]["issuerSerial"]["serialNumber"]
+                )
 
                 other_cert_found = True
 
@@ -87,7 +87,8 @@ hn1cAiAIfnI1FVrosL/94ZKfGW+xydYaelsPL+WBgqGvKuTMEg==
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
@@ -95,22 +96,23 @@ hn1cAiAIfnI1FVrosL/94ZKfGW+xydYaelsPL+WBgqGvKuTMEg==
 
         other_cert_found = False
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] == rfc5697.id_pe_otherCerts:
-                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] == rfc5697.id_pe_otherCerts:
+                self.assertIn(extn["extnID"], rfc5280.certificateExtensionsMap)
 
                 extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']],
-                    decodeOpenTypes=True)
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.certificateExtensionsMap[extn["extnID"]],
+                    decodeOpenTypes=True,
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
                 self.assertEqual(
-                    11939979568329289287,
-                    extnValue[0]['issuerSerial']['serialNumber'])
+                    11939979568329289287, extnValue[0]["issuerSerial"]["serialNumber"]
+                )
 
                 other_cert_found = True
 
@@ -119,6 +121,6 @@ hn1cAiAIfnI1FVrosL/94ZKfGW+xydYaelsPL+WBgqGvKuTMEg==
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

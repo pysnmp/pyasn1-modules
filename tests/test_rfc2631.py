@@ -29,12 +29,12 @@ class OtherInfoTestCase(unittest.TestCase):
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        hex1 = univ.OctetString(hexValue='00000001')
-        self.assertEqual(hex1, asn1Object['keyInfo']['counter'])
+        hex1 = univ.OctetString(hexValue="00000001")
+        self.assertEqual(hex1, asn1Object["keyInfo"]["counter"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

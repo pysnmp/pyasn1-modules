@@ -32,12 +32,11 @@ yDYOFDuqz/C2jyEwqgWCRyxyohuJXtk=
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(
-            rfc5480.secp384r1, asn1Object['parameters']['namedCurve'])
+        self.assertEqual(rfc5480.secp384r1, asn1Object["parameters"]["namedCurve"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

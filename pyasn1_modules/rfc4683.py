@@ -19,12 +19,13 @@ from pyasn1_modules import rfc5280
 
 # Used to compute the PEPSI value
 
+
 class HashContent(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('userPassword', char.UTF8String()),
-        namedtype.NamedType('authorityRandom', univ.OctetString()),
-        namedtype.NamedType('identifierType', univ.ObjectIdentifier()),
-        namedtype.NamedType('identifier', char.UTF8String())
+        namedtype.NamedType("userPassword", char.UTF8String()),
+        namedtype.NamedType("authorityRandom", univ.OctetString()),
+        namedtype.NamedType("identifierType", univ.ObjectIdentifier()),
+        namedtype.NamedType("identifier", char.UTF8String()),
     )
 
 
@@ -39,9 +40,9 @@ id_on_SIM = id_on + (6,)
 
 class SIM(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('hashAlg', rfc5280.AlgorithmIdentifier()),
-        namedtype.NamedType('authorityRandom', univ.OctetString()),
-        namedtype.NamedType('pEPSI', univ.OctetString())
+        namedtype.NamedType("hashAlg", rfc5280.AlgorithmIdentifier()),
+        namedtype.NamedType("authorityRandom", univ.OctetString()),
+        namedtype.NamedType("pEPSI", univ.OctetString()),
     )
 
 
@@ -54,9 +55,9 @@ id_regEPEPSI = id_pkip + (3,)
 
 class EncryptedPEPSI(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('identifierType', univ.ObjectIdentifier()),
-        namedtype.NamedType('identifier', char.UTF8String()),
-        namedtype.NamedType('sIM', SIM())
+        namedtype.NamedType("identifierType", univ.ObjectIdentifier()),
+        namedtype.NamedType("identifier", char.UTF8String()),
+        namedtype.NamedType("sIM", SIM()),
     )
 
 

@@ -51,27 +51,28 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         cs = rfc5917.DirectoryString()
-        cs['utf8String'] = u'Human Resources Department'
+        cs["utf8String"] = u"Human Resources Department"
         encoded_cs = der_encoder(cs)
 
         clearance_sponsor_found = False
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] == rfc5280.id_ce_subjectDirectoryAttributes:
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] == rfc5280.id_ce_subjectDirectoryAttributes:
 
-                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+                self.assertIn(extn["extnID"], rfc5280.certificateExtensionsMap)
 
                 ev, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.certificateExtensionsMap[extn["extnID"]],
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
-                self.assertEqual(extn['extnValue'], der_encoder(ev))
+                self.assertEqual(extn["extnValue"], der_encoder(ev))
 
                 for attr in ev:
-                    if attr['type'] == rfc5917.id_clearanceSponsor:
-                        self.assertEqual(encoded_cs, attr['values'][0])
+                    if attr["type"] == rfc5917.id_clearanceSponsor:
+                        self.assertEqual(encoded_cs, attr["values"][0])
                         clearance_sponsor_found = True
 
         self.assertTrue(clearance_sponsor_found)
@@ -79,7 +80,8 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
@@ -87,24 +89,25 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
 
         clearance_sponsor_found = False
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] == rfc5280.id_ce_subjectDirectoryAttributes:
-                self.assertIn(extn['extnID'], rfc5280.certificateExtensionsMap)
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] == rfc5280.id_ce_subjectDirectoryAttributes:
+                self.assertIn(extn["extnID"], rfc5280.certificateExtensionsMap)
 
                 ev, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']],
-                    decodeOpenTypes=True)
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.certificateExtensionsMap[extn["extnID"]],
+                    decodeOpenTypes=True,
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
-                self.assertEqual(extn['extnValue'], der_encoder(ev))
+                self.assertEqual(extn["extnValue"], der_encoder(ev))
 
                 for attr in ev:
-                    if attr['type'] == rfc5917.id_clearanceSponsor:
-                        hrd = u'Human Resources Department'
+                    if attr["type"] == rfc5917.id_clearanceSponsor:
+                        hrd = u"Human Resources Department"
 
-                        self.assertEqual(hrd, attr['values'][0]['utf8String'])
+                        self.assertEqual(hrd, attr["values"][0]["utf8String"])
 
                         clearance_sponsor_found = True
 
@@ -113,5 +116,5 @@ FFMC7GjGtCeLtXYqWfBnRdK26dOaHLB2
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite)

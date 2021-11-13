@@ -25,7 +25,14 @@ id_data = rfc5652.id_data
 
 # Object Identifiers
 
-id_KISA = univ.ObjectIdentifier((1, 2, 410, 200004,))
+id_KISA = univ.ObjectIdentifier(
+    (
+        1,
+        2,
+        410,
+        200004,
+    )
+)
 
 
 id_npki = id_KISA + (10,)
@@ -47,6 +54,7 @@ id_kisa_tac_tokenandpartially = id_kisa_tac + (3,)
 
 
 # Structures for Traceable Anonymous Certificate (TAC)
+
 
 class UserKey(univ.OctetString):
     pass
@@ -78,24 +86,25 @@ class TokenandPartiallySignedCertificateHash(ContentInfo):
 
 # Added to the module in RFC 5636 for the CMS Content Type Map
 
+
 class TACToken(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('userKey', UserKey()),
-        namedtype.NamedType('timeout', Timeout())
+        namedtype.NamedType("userKey", UserKey()),
+        namedtype.NamedType("timeout", Timeout()),
     )
 
 
 class TACTokenandBlindHash(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('token', Token()),
-        namedtype.NamedType('blinded', BlinedCertificateHash())
+        namedtype.NamedType("token", Token()),
+        namedtype.NamedType("blinded", BlinedCertificateHash()),
     )
 
 
 class TACTokenandPartiallySignedCertificateHash(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('token', Token()),
-        namedtype.NamedType('partially', PartiallySignedCertificateHash())
+        namedtype.NamedType("token", Token()),
+        namedtype.NamedType("partially", PartiallySignedCertificateHash()),
     )
 
 

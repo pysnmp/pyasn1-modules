@@ -66,27 +66,27 @@ IDAeDBFXYXRzb24sIGNvbWUgaGVyZQYJKoZIhvcNAQcB
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap)
-        self.assertEqual(rfc5083.id_ct_authEnvelopedData, asn1Object['contentType'])
+        self.assertIn(asn1Object["contentType"], rfc5652.cmsContentTypesMap)
+        self.assertEqual(rfc5083.id_ct_authEnvelopedData, asn1Object["contentType"])
 
-        authenv = asn1Object['content']
+        authenv = asn1Object["content"]
 
-        self.assertEqual(0, authenv['version'])
+        self.assertEqual(0, authenv["version"])
 
-        for attr in authenv['unauthAttrs']:
-            self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
-            if attr['attrType'] == rfc5035.id_aa_contentHint:
-                self.assertIn(
-                    'Watson', attr['attrValues'][0]['contentDescription'])
+        for attr in authenv["unauthAttrs"]:
+            self.assertIn(attr["attrType"], rfc5652.cmsAttributesMap)
+            if attr["attrType"] == rfc5035.id_aa_contentHint:
+                self.assertIn("Watson", attr["attrValues"][0]["contentDescription"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

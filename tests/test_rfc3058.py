@@ -59,51 +59,51 @@ b0tcQW20auWmCNkXd52jQJ7PXR6kr5I=
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_envelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_envelopedData, asn1Object["contentType"])
 
-        ed, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.EnvelopedData())
+        ed, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.EnvelopedData())
 
         self.assertFalse(rest)
         self.assertTrue(ed.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(ed))
+        self.assertEqual(asn1Object["content"], der_encoder(ed))
 
-        kwa = ed['recipientInfos'][0]['kekri']['keyEncryptionAlgorithm']
-        self.assertEqual(rfc3058.id_alg_CMSIDEAwrap, kwa['algorithm'])
-        self.assertEqual(kwa['parameters'], der_encoder(univ.Null("")))
+        kwa = ed["recipientInfos"][0]["kekri"]["keyEncryptionAlgorithm"]
+        self.assertEqual(rfc3058.id_alg_CMSIDEAwrap, kwa["algorithm"])
+        self.assertEqual(kwa["parameters"], der_encoder(univ.Null("")))
 
-        cea = ed['encryptedContentInfo']['contentEncryptionAlgorithm']
-        self.assertEqual(rfc3058.id_IDEA_CBC, cea['algorithm'])
-        param, rest = der_decoder(
-            cea['parameters'], asn1Spec=rfc3058.IDEA_CBCPar())
+        cea = ed["encryptedContentInfo"]["contentEncryptionAlgorithm"]
+        self.assertEqual(rfc3058.id_IDEA_CBC, cea["algorithm"])
+        param, rest = der_decoder(cea["parameters"], asn1Spec=rfc3058.IDEA_CBCPar())
 
         self.assertFalse(rest)
         self.assertTrue(param.prettyPrint())
-        self.assertEqual(cea['parameters'], der_encoder(param))
+        self.assertEqual(cea["parameters"], der_encoder(param))
 
-        iv = univ.OctetString(hexValue='424f4755535f4956')
-        self.assertEqual(iv, param['iv'])
+        iv = univ.OctetString(hexValue="424f4755535f4956")
+        self.assertEqual(iv, param["iv"])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.env_data_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        kekri = asn1Object['content']['recipientInfos'][0]['kekri']
-        kwa = kekri['keyEncryptionAlgorithm']
-        self.assertEqual(rfc3058.id_alg_CMSIDEAwrap, kwa['algorithm'])
-        self.assertEqual(univ.Null(""), kwa['parameters'])
+        kekri = asn1Object["content"]["recipientInfos"][0]["kekri"]
+        kwa = kekri["keyEncryptionAlgorithm"]
+        self.assertEqual(rfc3058.id_alg_CMSIDEAwrap, kwa["algorithm"])
+        self.assertEqual(univ.Null(""), kwa["parameters"])
 
-        eci = asn1Object['content']['encryptedContentInfo']
-        cea = eci['contentEncryptionAlgorithm']
-        self.assertEqual(rfc3058.id_IDEA_CBC, cea['algorithm'])
+        eci = asn1Object["content"]["encryptedContentInfo"]
+        cea = eci["contentEncryptionAlgorithm"]
+        self.assertEqual(rfc3058.id_IDEA_CBC, cea["algorithm"])
 
-        iv = univ.OctetString(hexValue='424f4755535f4956')
-        self.assertEqual(iv, cea['parameters']['iv'])
+        iv = univ.OctetString(hexValue="424f4755535f4956")
+        self.assertEqual(iv, cea["parameters"]["iv"])
+
 
 class SMIMECapabilitiesTestCase(unittest.TestCase):
     smime_capabilities_pem_text = "MB4wDQYLKwYBBAGBPAcBAQIwDQYLKwYBBAGBPAcBAQY="
@@ -113,16 +113,15 @@ class SMIMECapabilitiesTestCase(unittest.TestCase):
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        alg_oid_list = [ ]
+        alg_oid_list = []
         for cap in asn1Object:
-            self.assertFalse(cap['parameters'].hasValue())
-            alg_oid_list.append(cap['capabilityID'])
+            self.assertFalse(cap["parameters"].hasValue())
+            alg_oid_list.append(cap["capabilityID"])
 
         self.assertIn(rfc3058.id_IDEA_CBC, alg_oid_list)
         self.assertIn(rfc3058.id_alg_CMSIDEAwrap, alg_oid_list)
@@ -130,6 +129,6 @@ class SMIMECapabilitiesTestCase(unittest.TestCase):
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

@@ -15,8 +15,11 @@ from pyasn1.codec.der import decoder, encoder
 from pyasn1_modules import pem, rfc2511
 
 if len(sys.argv) != 1:
-    print("""Usage:
-$ cat crmf.pem | %s""" % sys.argv[0])
+    print(
+        """Usage:
+$ cat crmf.pem | %s"""
+        % sys.argv[0]
+    )
     sys.exit(-1)
 
 certReq = rfc2511.CertReqMessages()
@@ -29,4 +32,4 @@ cr, rest = decoder.decode(substrate, asn1Spec=certReq)
 
 print(cr.prettyPrint())
 
-assert encoder.encode(cr) == substrate, 'crmf recode fails'
+assert encoder.encode(cr) == substrate, "crmf recode fails"

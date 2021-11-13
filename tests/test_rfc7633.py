@@ -55,12 +55,13 @@ AOQSxhs011emVxyBIXT0ZGbmBY8LFRh6eGIOCAJbkM5T
 
         extn_list = []
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            extn_list.append(extn['extnID'])
-            if extn['extnID'] == rfc7633.id_pe_tlsfeature:
-                s = extn['extnValue']
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            extn_list.append(extn["extnID"])
+            if extn["extnID"] == rfc7633.id_pe_tlsfeature:
+                s = extn["extnValue"]
                 features, rest = der_decoder(
-                    s, rfc5280.certificateExtensionsMap[extn['extnID']])
+                    s, rfc5280.certificateExtensionsMap[extn["extnID"]]
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(features.prettyPrint())
@@ -73,6 +74,6 @@ AOQSxhs011emVxyBIXT0ZGbmBY8LFRh6eGIOCAJbkM5T
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

@@ -11,12 +11,11 @@
 # ASN.1 source from:
 # http://www.ietf.org/rfc/rfc3281.txt
 #
-from pyasn1.type import (char, constraint, namedtype, namedval, tag, univ,
-                         useful)
+from pyasn1.type import char, constraint, namedtype, namedval, tag, univ, useful
 
 from pyasn1_modules import rfc3280
 
-MAX = float('inf')
+MAX = float("inf")
 
 
 def _buildOid(*components):
@@ -35,11 +34,17 @@ class ObjectDigestInfo(univ.Sequence):
 
 
 ObjectDigestInfo.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('digestedObjectType', univ.Enumerated(
-        namedValues=namedval.NamedValues(('publicKey', 0), ('publicKeyCert', 1), ('otherObjectTypes', 2)))),
-    namedtype.OptionalNamedType('otherObjectTypeID', univ.ObjectIdentifier()),
-    namedtype.NamedType('digestAlgorithm', rfc3280.AlgorithmIdentifier()),
-    namedtype.NamedType('objectDigest', univ.BitString())
+    namedtype.NamedType(
+        "digestedObjectType",
+        univ.Enumerated(
+            namedValues=namedval.NamedValues(
+                ("publicKey", 0), ("publicKeyCert", 1), ("otherObjectTypes", 2)
+            )
+        ),
+    ),
+    namedtype.OptionalNamedType("otherObjectTypeID", univ.ObjectIdentifier()),
+    namedtype.NamedType("digestAlgorithm", rfc3280.AlgorithmIdentifier()),
+    namedtype.NamedType("objectDigest", univ.BitString()),
 )
 
 
@@ -48,9 +53,9 @@ class IssuerSerial(univ.Sequence):
 
 
 IssuerSerial.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('issuer', rfc3280.GeneralNames()),
-    namedtype.NamedType('serial', rfc3280.CertificateSerialNumber()),
-    namedtype.OptionalNamedType('issuerUID', rfc3280.UniqueIdentifier())
+    namedtype.NamedType("issuer", rfc3280.GeneralNames()),
+    namedtype.NamedType("serial", rfc3280.CertificateSerialNumber()),
+    namedtype.OptionalNamedType("issuerUID", rfc3280.UniqueIdentifier()),
 )
 
 
@@ -59,9 +64,9 @@ class TargetCert(univ.Sequence):
 
 
 TargetCert.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('targetCertificate', IssuerSerial()),
-    namedtype.OptionalNamedType('targetName', rfc3280.GeneralName()),
-    namedtype.OptionalNamedType('certDigestInfo', ObjectDigestInfo())
+    namedtype.NamedType("targetCertificate", IssuerSerial()),
+    namedtype.OptionalNamedType("targetName", rfc3280.GeneralName()),
+    namedtype.OptionalNamedType("certDigestInfo", ObjectDigestInfo()),
 )
 
 
@@ -70,12 +75,24 @@ class Target(univ.Choice):
 
 
 Target.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('targetName', rfc3280.GeneralName().subtype(
-        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-    namedtype.NamedType('targetGroup', rfc3280.GeneralName().subtype(
-        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
-    namedtype.NamedType('targetCert',
-                        TargetCert().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2)))
+    namedtype.NamedType(
+        "targetName",
+        rfc3280.GeneralName().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)
+        ),
+    ),
+    namedtype.NamedType(
+        "targetGroup",
+        rfc3280.GeneralName().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)
+        ),
+    ),
+    namedtype.NamedType(
+        "targetCert",
+        TargetCert().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2)
+        ),
+    ),
 )
 
 
@@ -106,12 +123,12 @@ class ClassList(univ.BitString):
 
 
 ClassList.namedValues = namedval.NamedValues(
-    ('unmarked', 0),
-    ('unclassified', 1),
-    ('restricted', 2),
-    ('confidential', 3),
-    ('secret', 4),
-    ('topSecret', 5)
+    ("unmarked", 0),
+    ("unclassified", 1),
+    ("restricted", 2),
+    ("confidential", 3),
+    ("secret", 4),
+    ("topSecret", 5),
 )
 
 
@@ -120,9 +137,18 @@ class SecurityCategory(univ.Sequence):
 
 
 SecurityCategory.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('type', univ.ObjectIdentifier().subtype(
-        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-    namedtype.NamedType('value', univ.Any().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+    namedtype.NamedType(
+        "type",
+        univ.ObjectIdentifier().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)
+        ),
+    ),
+    namedtype.NamedType(
+        "value",
+        univ.Any().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)
+        ),
+    ),
 )
 
 
@@ -131,14 +157,24 @@ class Clearance(univ.Sequence):
 
 
 Clearance.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('policyId', univ.ObjectIdentifier().subtype(
-        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-    namedtype.DefaultedNamedType('classList',
-                                 ClassList().subtype(implicitTag=tag.Tag(tag.tagClassContext,
-                                                                         tag.tagFormatSimple, 1)).subtype(
-                                     value="unclassified")),
-    namedtype.OptionalNamedType('securityCategories', univ.SetOf(componentType=SecurityCategory()).subtype(
-        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)))
+    namedtype.NamedType(
+        "policyId",
+        univ.ObjectIdentifier().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)
+        ),
+    ),
+    namedtype.DefaultedNamedType(
+        "classList",
+        ClassList()
+        .subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))
+        .subtype(value="unclassified"),
+    ),
+    namedtype.OptionalNamedType(
+        "securityCategories",
+        univ.SetOf(componentType=SecurityCategory()).subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 2)
+        ),
+    ),
 )
 
 
@@ -146,9 +182,7 @@ class AttCertVersion(univ.Integer):
     pass
 
 
-AttCertVersion.namedValues = namedval.NamedValues(
-    ('v2', 1)
-)
+AttCertVersion.namedValues = namedval.NamedValues(("v2", 1))
 
 id_aca = _buildOid(rfc3280.id_pkix, 10)
 
@@ -167,13 +201,23 @@ class AAControls(univ.Sequence):
 
 
 AAControls.componentType = namedtype.NamedTypes(
-    namedtype.OptionalNamedType('pathLenConstraint',
-                                univ.Integer().subtype(subtypeSpec=constraint.ValueRangeConstraint(0, MAX))),
-    namedtype.OptionalNamedType('permittedAttrs',
-                                AttrSpec().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-    namedtype.OptionalNamedType('excludedAttrs',
-                                AttrSpec().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
-    namedtype.DefaultedNamedType('permitUnSpecified', univ.Boolean().subtype(value=1))
+    namedtype.OptionalNamedType(
+        "pathLenConstraint",
+        univ.Integer().subtype(subtypeSpec=constraint.ValueRangeConstraint(0, MAX)),
+    ),
+    namedtype.OptionalNamedType(
+        "permittedAttrs",
+        AttrSpec().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)
+        ),
+    ),
+    namedtype.OptionalNamedType(
+        "excludedAttrs",
+        AttrSpec().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)
+        ),
+    ),
+    namedtype.DefaultedNamedType("permitUnSpecified", univ.Boolean().subtype(value=1)),
 )
 
 
@@ -182,8 +226,8 @@ class AttCertValidityPeriod(univ.Sequence):
 
 
 AttCertValidityPeriod.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('notBeforeTime', useful.GeneralizedTime()),
-    namedtype.NamedType('notAfterTime', useful.GeneralizedTime())
+    namedtype.NamedType("notBeforeTime", useful.GeneralizedTime()),
+    namedtype.NamedType("notAfterTime", useful.GeneralizedTime()),
 )
 
 
@@ -195,11 +239,19 @@ class V2Form(univ.Sequence):
 
 
 V2Form.componentType = namedtype.NamedTypes(
-    namedtype.OptionalNamedType('issuerName', rfc3280.GeneralNames()),
-    namedtype.OptionalNamedType('baseCertificateID', IssuerSerial().subtype(
-        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
-    namedtype.OptionalNamedType('objectDigestInfo', ObjectDigestInfo().subtype(
-        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)))
+    namedtype.OptionalNamedType("issuerName", rfc3280.GeneralNames()),
+    namedtype.OptionalNamedType(
+        "baseCertificateID",
+        IssuerSerial().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)
+        ),
+    ),
+    namedtype.OptionalNamedType(
+        "objectDigestInfo",
+        ObjectDigestInfo().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)
+        ),
+    ),
 )
 
 
@@ -208,9 +260,13 @@ class AttCertIssuer(univ.Choice):
 
 
 AttCertIssuer.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('v1Form', rfc3280.GeneralNames()),
-    namedtype.NamedType('v2Form',
-                        V2Form().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)))
+    namedtype.NamedType("v1Form", rfc3280.GeneralNames()),
+    namedtype.NamedType(
+        "v2Form",
+        V2Form().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)
+        ),
+    ),
 )
 
 
@@ -219,12 +275,24 @@ class Holder(univ.Sequence):
 
 
 Holder.componentType = namedtype.NamedTypes(
-    namedtype.OptionalNamedType('baseCertificateID', IssuerSerial().subtype(
-        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
-    namedtype.OptionalNamedType('entityName', rfc3280.GeneralNames().subtype(
-        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
-    namedtype.OptionalNamedType('objectDigestInfo', ObjectDigestInfo().subtype(
-        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2)))
+    namedtype.OptionalNamedType(
+        "baseCertificateID",
+        IssuerSerial().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)
+        ),
+    ),
+    namedtype.OptionalNamedType(
+        "entityName",
+        rfc3280.GeneralNames().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)
+        ),
+    ),
+    namedtype.OptionalNamedType(
+        "objectDigestInfo",
+        ObjectDigestInfo().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2)
+        ),
+    ),
 )
 
 
@@ -233,15 +301,17 @@ class AttributeCertificateInfo(univ.Sequence):
 
 
 AttributeCertificateInfo.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('version', AttCertVersion()),
-    namedtype.NamedType('holder', Holder()),
-    namedtype.NamedType('issuer', AttCertIssuer()),
-    namedtype.NamedType('signature', rfc3280.AlgorithmIdentifier()),
-    namedtype.NamedType('serialNumber', rfc3280.CertificateSerialNumber()),
-    namedtype.NamedType('attrCertValidityPeriod', AttCertValidityPeriod()),
-    namedtype.NamedType('attributes', univ.SequenceOf(componentType=rfc3280.Attribute())),
-    namedtype.OptionalNamedType('issuerUniqueID', rfc3280.UniqueIdentifier()),
-    namedtype.OptionalNamedType('extensions', rfc3280.Extensions())
+    namedtype.NamedType("version", AttCertVersion()),
+    namedtype.NamedType("holder", Holder()),
+    namedtype.NamedType("issuer", AttCertIssuer()),
+    namedtype.NamedType("signature", rfc3280.AlgorithmIdentifier()),
+    namedtype.NamedType("serialNumber", rfc3280.CertificateSerialNumber()),
+    namedtype.NamedType("attrCertValidityPeriod", AttCertValidityPeriod()),
+    namedtype.NamedType(
+        "attributes", univ.SequenceOf(componentType=rfc3280.Attribute())
+    ),
+    namedtype.OptionalNamedType("issuerUniqueID", rfc3280.UniqueIdentifier()),
+    namedtype.OptionalNamedType("extensions", rfc3280.Extensions()),
 )
 
 
@@ -250,9 +320,9 @@ class AttributeCertificate(univ.Sequence):
 
 
 AttributeCertificate.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('acinfo', AttributeCertificateInfo()),
-    namedtype.NamedType('signatureAlgorithm', rfc3280.AlgorithmIdentifier()),
-    namedtype.NamedType('signatureValue', univ.BitString())
+    namedtype.NamedType("acinfo", AttributeCertificateInfo()),
+    namedtype.NamedType("signatureAlgorithm", rfc3280.AlgorithmIdentifier()),
+    namedtype.NamedType("signatureValue", univ.BitString()),
 )
 
 id_mod = _buildOid(rfc3280.id_pkix, 0)
@@ -267,10 +337,18 @@ class RoleSyntax(univ.Sequence):
 
 
 RoleSyntax.componentType = namedtype.NamedTypes(
-    namedtype.OptionalNamedType('roleAuthority', rfc3280.GeneralNames().subtype(
-        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-    namedtype.NamedType('roleName',
-                        rfc3280.GeneralName().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+    namedtype.OptionalNamedType(
+        "roleAuthority",
+        rfc3280.GeneralNames().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)
+        ),
+    ),
+    namedtype.NamedType(
+        "roleName",
+        rfc3280.GeneralName().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)
+        ),
+    ),
 )
 
 id_aca_chargingIdentity = _buildOid(id_aca, 3)
@@ -281,9 +359,9 @@ class ACClearAttrs(univ.Sequence):
 
 
 ACClearAttrs.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('acIssuer', rfc3280.GeneralName()),
-    namedtype.NamedType('acSerial', univ.Integer()),
-    namedtype.NamedType('attrs', univ.SequenceOf(componentType=rfc3280.Attribute()))
+    namedtype.NamedType("acIssuer", rfc3280.GeneralName()),
+    namedtype.NamedType("acSerial", univ.Integer()),
+    namedtype.NamedType("attrs", univ.SequenceOf(componentType=rfc3280.Attribute())),
 )
 
 id_aca_group = _buildOid(id_aca, 4)
@@ -296,9 +374,9 @@ class SvceAuthInfo(univ.Sequence):
 
 
 SvceAuthInfo.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('service', rfc3280.GeneralName()),
-    namedtype.NamedType('ident', rfc3280.GeneralName()),
-    namedtype.OptionalNamedType('authInfo', univ.OctetString())
+    namedtype.NamedType("service", rfc3280.GeneralName()),
+    namedtype.NamedType("ident", rfc3280.GeneralName()),
+    namedtype.OptionalNamedType("authInfo", univ.OctetString()),
 )
 
 
@@ -308,19 +386,23 @@ class IetfAttrSyntax(univ.Sequence):
 
 IetfAttrSyntax.componentType = namedtype.NamedTypes(
     namedtype.OptionalNamedType(
-        'policyAuthority', rfc3280.GeneralNames().subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))
+        "policyAuthority",
+        rfc3280.GeneralNames().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)
+        ),
     ),
     namedtype.NamedType(
-        'values', univ.SequenceOf(
+        "values",
+        univ.SequenceOf(
             componentType=univ.Choice(
                 componentType=namedtype.NamedTypes(
-                    namedtype.NamedType('octets', univ.OctetString()),
-                    namedtype.NamedType('oid', univ.ObjectIdentifier()),
-                    namedtype.NamedType('string', char.UTF8String())
+                    namedtype.NamedType("octets", univ.OctetString()),
+                    namedtype.NamedType("oid", univ.ObjectIdentifier()),
+                    namedtype.NamedType("string", char.UTF8String()),
                 )
             )
-        )
-    )
+        ),
+    ),
 )
 
 id_aca_encAttrs = _buildOid(id_aca, 6)

@@ -48,40 +48,42 @@ fi6h7i9VVAZpslaKFfkNg12gLbbsCB1q36l5VXjHY/qe0FIUa9ogRrOi
 
     def testOpenTypes(self):
         openTypesMap = {
-            univ.ObjectIdentifier('1.2.840.113549.1.1.1'): univ.Null(""),
-            univ.ObjectIdentifier('1.2.840.113549.1.1.5'): univ.Null(""),
-            univ.ObjectIdentifier('1.2.840.113549.1.1.11'): univ.Null(""),
+            univ.ObjectIdentifier("1.2.840.113549.1.1.1"): univ.Null(""),
+            univ.ObjectIdentifier("1.2.840.113549.1.1.5"): univ.Null(""),
+            univ.ObjectIdentifier("1.2.840.113549.1.1.11"): univ.Null(""),
         }
 
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder(substrate,
-                                       asn1Spec=rfc2986.CertificationRequest(),
-                                       openTypes=openTypesMap,
-                                       decodeOpenTypes=True)
+        asn1Object, rest = der_decoder(
+            substrate,
+            asn1Spec=rfc2986.CertificationRequest(),
+            openTypes=openTypesMap,
+            decodeOpenTypes=True,
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        for rdn in asn1Object['certificationRequestInfo']['subject']['rdnSequence']:
+        for rdn in asn1Object["certificationRequestInfo"]["subject"]["rdnSequence"]:
             for atv in rdn:
-                if atv['type'] == rfc5280.id_at_countryName:
-                    self.assertEqual(char.PrintableString('US'), atv['value'])
+                if atv["type"] == rfc5280.id_at_countryName:
+                    self.assertEqual(char.PrintableString("US"), atv["value"])
 
                 else:
-                    self.assertGreater(len(atv['value']['utf8String']), 2)
+                    self.assertGreater(len(atv["value"]["utf8String"]), 2)
 
-        spki_alg = asn1Object['certificationRequestInfo']['subjectPKInfo']['algorithm']
+        spki_alg = asn1Object["certificationRequestInfo"]["subjectPKInfo"]["algorithm"]
 
-        self.assertEqual(univ.Null(""), spki_alg['parameters'])
+        self.assertEqual(univ.Null(""), spki_alg["parameters"])
 
-        sig_alg = asn1Object['signatureAlgorithm']
+        sig_alg = asn1Object["signatureAlgorithm"]
 
-        self.assertEqual(univ.Null(""), sig_alg['parameters'])
+        self.assertEqual(univ.Null(""), sig_alg["parameters"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

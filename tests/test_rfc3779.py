@@ -53,18 +53,18 @@ V+vo2L72yerdbsP9xjqvhZrLKfsLZjYK4SdYYthi
         self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
         extn_list = []
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            extn_list.append(extn['extnID'])
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            extn_list.append(extn["extnID"])
 
-            if extn['extnID'] == rfc3779.id_pe_ipAddrBlocks:
-                s = extn['extnValue']
+            if extn["extnID"] == rfc3779.id_pe_ipAddrBlocks:
+                s = extn["extnValue"]
                 addr_blocks, rest = der_decoder.decode(s, rfc3779.IPAddrBlocks())
                 self.assertFalse(rest)
                 self.assertTrue(addr_blocks.prettyPrint())
                 self.assertEqual(s, der_encoder.encode(addr_blocks))
 
-            if extn['extnID'] == rfc3779.id_pe_autonomousSysIds:
-                s = extn['extnValue']
+            if extn["extnID"] == rfc3779.id_pe_autonomousSysIds:
+                s = extn["extnValue"]
                 as_ids, rest = der_decoder.decode(s, rfc3779.ASIdentifiers())
                 self.assertFalse(rest)
                 self.assertTrue(as_ids.prettyPrint())
@@ -80,17 +80,20 @@ V+vo2L72yerdbsP9xjqvhZrLKfsLZjYK4SdYYthi
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if (extn['extnID'] == rfc3779.id_pe_ipAddrBlocks or
-                    extn['extnID'] == rfc3779.id_pe_autonomousSysIds):
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if (
+                extn["extnID"] == rfc3779.id_pe_ipAddrBlocks
+                or extn["extnID"] == rfc3779.id_pe_autonomousSysIds
+            ):
                 extnValue, rest = der_decoder.decode(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
-                self.assertEqual(extn['extnValue'], der_encoder.encode(extnValue))
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.certificateExtensionsMap[extn["extnID"]],
+                )
+                self.assertEqual(extn["extnValue"], der_encoder.encode(extnValue))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

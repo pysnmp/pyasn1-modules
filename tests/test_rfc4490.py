@@ -34,46 +34,51 @@ xlHbjbL0jHF+7XKp
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
-        
-        sd, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.SignedData())
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
+
+        sd, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.SignedData())
         self.assertFalse(rest)
         self.assertTrue(sd.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(sd))
+        self.assertEqual(asn1Object["content"], der_encoder(sd))
 
         encoded_null = der_encoder(univ.Null(""))
 
-        si = sd['signerInfos'][0]
-        self.assertEqual(rfc4357.id_GostR3411_94, si['digestAlgorithm']['algorithm'])
-        self.assertEqual(encoded_null, si['digestAlgorithm']['parameters'])
+        si = sd["signerInfos"][0]
+        self.assertEqual(rfc4357.id_GostR3411_94, si["digestAlgorithm"]["algorithm"])
+        self.assertEqual(encoded_null, si["digestAlgorithm"]["parameters"])
 
-        self.assertEqual(rfc4357.id_GostR3410_2001, si['signatureAlgorithm']['algorithm'])
-        self.assertEqual(encoded_null, si['signatureAlgorithm']['parameters'])
+        self.assertEqual(
+            rfc4357.id_GostR3410_2001, si["signatureAlgorithm"]["algorithm"]
+        )
+        self.assertEqual(encoded_null, si["signatureAlgorithm"]["parameters"])
 
         sig = rfc4490.GostR3410_2001_Signature()
-        sig = si['signature']
+        sig = si["signature"]
         self.assertEqual(64, len(sig))
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.signed_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        si = asn1Object['content']['signerInfos'][0]
-        self.assertEqual(rfc4357.id_GostR3411_94, si['digestAlgorithm']['algorithm'])
-        self.assertEqual(univ.Null(""), si['digestAlgorithm']['parameters'])
+        si = asn1Object["content"]["signerInfos"][0]
+        self.assertEqual(rfc4357.id_GostR3411_94, si["digestAlgorithm"]["algorithm"])
+        self.assertEqual(univ.Null(""), si["digestAlgorithm"]["parameters"])
 
-        self.assertEqual(rfc4357.id_GostR3410_2001, si['signatureAlgorithm']['algorithm'])
-        self.assertEqual(univ.Null(""), si['signatureAlgorithm']['parameters'])
+        self.assertEqual(
+            rfc4357.id_GostR3410_2001, si["signatureAlgorithm"]["algorithm"]
+        )
+        self.assertEqual(univ.Null(""), si["signatureAlgorithm"]["parameters"])
 
         sig = rfc4490.GostR3410_2001_Signature()
-        sig = si['signature']
+        sig = si["signature"]
         self.assertEqual(64, len(sig))
+
 
 class KeyAgreeTestCase(unittest.TestCase):
     keyagree_pem_text = """\
@@ -97,53 +102,65 @@ hQMCAhUwEwQItzXhegc1oh0GByqFAwICHwGADDmxivS/qeJlJbZVyQ==
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_envelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_envelopedData, asn1Object["contentType"])
 
-        ed, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.EnvelopedData())
+        ed, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.EnvelopedData())
         self.assertFalse(rest)
         self.assertTrue(ed.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(ed))
+        self.assertEqual(asn1Object["content"], der_encoder(ed))
 
-        ri = ed['recipientInfos'][0]
-        alg1 = ri['kari']['originator']['originatorKey']['algorithm']
-        self.assertEqual(rfc4357.id_GostR3410_2001, alg1['algorithm'])
+        ri = ed["recipientInfos"][0]
+        alg1 = ri["kari"]["originator"]["originatorKey"]["algorithm"]
+        self.assertEqual(rfc4357.id_GostR3410_2001, alg1["algorithm"])
         param1, rest = der_decoder(
-            alg1['parameters'],
-            asn1Spec=rfc4357.GostR3410_2001_PublicKeyParameters())
+            alg1["parameters"], asn1Spec=rfc4357.GostR3410_2001_PublicKeyParameters()
+        )
         self.assertFalse(rest)
         self.assertTrue(param1.prettyPrint())
-        self.assertEqual(alg1['parameters'], der_encoder(param1))
+        self.assertEqual(alg1["parameters"], der_encoder(param1))
 
-        self.assertEqual(rfc4357.id_GostR3410_2001_CryptoPro_XchA_ParamSet, param1['publicKeyParamSet'])
-        self.assertEqual(rfc4357.id_GostR3411_94_CryptoProParamSet, param1['digestParamSet'])
+        self.assertEqual(
+            rfc4357.id_GostR3410_2001_CryptoPro_XchA_ParamSet,
+            param1["publicKeyParamSet"],
+        )
+        self.assertEqual(
+            rfc4357.id_GostR3411_94_CryptoProParamSet, param1["digestParamSet"]
+        )
 
-        self.assertEqual(8, len(ri['kari']['ukm']))
-    
-        alg2 = ri['kari']['keyEncryptionAlgorithm']
-        self.assertEqual(rfc4490.id_GostR3410_2001_CryptoPro_ESDH, alg2['algorithm'])
+        self.assertEqual(8, len(ri["kari"]["ukm"]))
+
+        alg2 = ri["kari"]["keyEncryptionAlgorithm"]
+        self.assertEqual(rfc4490.id_GostR3410_2001_CryptoPro_ESDH, alg2["algorithm"])
         param2, rest = der_decoder(
-            alg2['parameters'], asn1Spec=rfc4357.AlgorithmIdentifier())
+            alg2["parameters"], asn1Spec=rfc4357.AlgorithmIdentifier()
+        )
         self.assertFalse(rest)
         self.assertTrue(param2.prettyPrint())
-        self.assertEqual(alg2['parameters'], der_encoder(param2))
+        self.assertEqual(alg2["parameters"], der_encoder(param2))
 
-        self.assertEqual(rfc4490.id_Gost28147_89_None_KeyWrap, param2['algorithm'])
+        self.assertEqual(rfc4490.id_Gost28147_89_None_KeyWrap, param2["algorithm"])
         kwa_p, rest = der_decoder(
-            param2['parameters'], asn1Spec=rfc4490.Gost28147_89_KeyWrapParameters())
+            param2["parameters"], asn1Spec=rfc4490.Gost28147_89_KeyWrapParameters()
+        )
         self.assertFalse(rest)
         self.assertTrue(kwa_p.prettyPrint())
-        self.assertEqual(param2['parameters'], der_encoder(kwa_p))
-        self.assertEqual(rfc4357.id_Gost28147_89_CryptoPro_A_ParamSet, kwa_p['encryptionParamSet'])
+        self.assertEqual(param2["parameters"], der_encoder(kwa_p))
+        self.assertEqual(
+            rfc4357.id_Gost28147_89_CryptoPro_A_ParamSet, kwa_p["encryptionParamSet"]
+        )
 
-        alg3 = ed['encryptedContentInfo']['contentEncryptionAlgorithm']        
-        self.assertEqual(rfc4357.id_Gost28147_89, alg3['algorithm'])
-        param3, rest = der_decoder(alg3['parameters'], asn1Spec=rfc4357.Gost28147_89_Parameters())
+        alg3 = ed["encryptedContentInfo"]["contentEncryptionAlgorithm"]
+        self.assertEqual(rfc4357.id_Gost28147_89, alg3["algorithm"])
+        param3, rest = der_decoder(
+            alg3["parameters"], asn1Spec=rfc4357.Gost28147_89_Parameters()
+        )
         self.assertFalse(rest)
         self.assertTrue(param3.prettyPrint())
-        self.assertEqual(alg3['parameters'], der_encoder(param3))
-        self.assertEqual(8, len(param3['iv']))
-        self.assertEqual(rfc4357.id_Gost28147_89_CryptoPro_A_ParamSet, param3['encryptionParamSet'])
+        self.assertEqual(alg3["parameters"], der_encoder(param3))
+        self.assertEqual(8, len(param3["iv"]))
+        self.assertEqual(
+            rfc4357.id_Gost28147_89_CryptoPro_A_ParamSet, param3["encryptionParamSet"]
+        )
 
     def testOpenTypes(self):
         openTypeMap = {
@@ -154,34 +171,49 @@ hQMCAhUwEwQItzXhegc1oh0GByqFAwICHwGADDmxivS/qeJlJbZVyQ==
 
         substrate = pem.readBase64fromText(self.keyagree_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec,
-            openTypes=openTypeMap, decodeOpenTypes=True)
+            substrate,
+            asn1Spec=self.asn1Spec,
+            openTypes=openTypeMap,
+            decodeOpenTypes=True,
+        )
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_envelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_envelopedData, asn1Object["contentType"])
 
-        ri = asn1Object['content']['recipientInfos'][0]
-        alg1 = ri['kari']['originator']['originatorKey']['algorithm']
-        self.assertEqual(rfc4357.id_GostR3410_2001, alg1['algorithm'])
-        param1 = alg1['parameters']
-        self.assertEqual(rfc4357.id_GostR3410_2001_CryptoPro_XchA_ParamSet, param1['publicKeyParamSet'])
-        self.assertEqual(rfc4357.id_GostR3411_94_CryptoProParamSet, param1['digestParamSet'])
+        ri = asn1Object["content"]["recipientInfos"][0]
+        alg1 = ri["kari"]["originator"]["originatorKey"]["algorithm"]
+        self.assertEqual(rfc4357.id_GostR3410_2001, alg1["algorithm"])
+        param1 = alg1["parameters"]
+        self.assertEqual(
+            rfc4357.id_GostR3410_2001_CryptoPro_XchA_ParamSet,
+            param1["publicKeyParamSet"],
+        )
+        self.assertEqual(
+            rfc4357.id_GostR3411_94_CryptoProParamSet, param1["digestParamSet"]
+        )
 
-        self.assertEqual(8, len(ri['kari']['ukm']))
+        self.assertEqual(8, len(ri["kari"]["ukm"]))
 
-        alg2 = ri['kari']['keyEncryptionAlgorithm']
-        self.assertEqual(rfc4490.id_GostR3410_2001_CryptoPro_ESDH, alg2['algorithm'])
-        param2 = alg2['parameters']
-        self.assertEqual(rfc4490.id_Gost28147_89_None_KeyWrap, param2['algorithm'])
-        kwa_p = param2['parameters']
-        self.assertEqual(rfc4357.id_Gost28147_89_CryptoPro_A_ParamSet, kwa_p['encryptionParamSet'])
-    
-        alg3 = asn1Object['content']['encryptedContentInfo']['contentEncryptionAlgorithm']        
-        self.assertEqual(rfc4357.id_Gost28147_89, alg3['algorithm'])
-        param3 = alg3['parameters']
-        self.assertEqual(8, len(param3['iv']))
-        self.assertEqual(rfc4357.id_Gost28147_89_CryptoPro_A_ParamSet, param3['encryptionParamSet'])
+        alg2 = ri["kari"]["keyEncryptionAlgorithm"]
+        self.assertEqual(rfc4490.id_GostR3410_2001_CryptoPro_ESDH, alg2["algorithm"])
+        param2 = alg2["parameters"]
+        self.assertEqual(rfc4490.id_Gost28147_89_None_KeyWrap, param2["algorithm"])
+        kwa_p = param2["parameters"]
+        self.assertEqual(
+            rfc4357.id_Gost28147_89_CryptoPro_A_ParamSet, kwa_p["encryptionParamSet"]
+        )
+
+        alg3 = asn1Object["content"]["encryptedContentInfo"][
+            "contentEncryptionAlgorithm"
+        ]
+        self.assertEqual(rfc4357.id_Gost28147_89, alg3["algorithm"])
+        param3 = alg3["parameters"]
+        self.assertEqual(8, len(param3["iv"]))
+        self.assertEqual(
+            rfc4357.id_Gost28147_89_CryptoPro_A_ParamSet, param3["encryptionParamSet"]
+        )
+
 
 class KeyTransportTestCase(unittest.TestCase):
     keytrans_pem_text = """\
@@ -205,34 +237,42 @@ BgYqhQMCAhUwEwQIvBCLHwv/NCkGByqFAwICHwGADKqOch3uT7Mu4w+hNw==
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_envelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_envelopedData, asn1Object["contentType"])
 
-        ed, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.EnvelopedData())
+        ed, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.EnvelopedData())
         self.assertFalse(rest)
         self.assertTrue(ed.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(ed))
+        self.assertEqual(asn1Object["content"], der_encoder(ed))
 
-        ri = ed['recipientInfos'][0]
-        alg1 = ri['ktri']['keyEncryptionAlgorithm']
-        self.assertEqual(rfc4357.id_GostR3410_2001, alg1['algorithm'])
+        ri = ed["recipientInfos"][0]
+        alg1 = ri["ktri"]["keyEncryptionAlgorithm"]
+        self.assertEqual(rfc4357.id_GostR3410_2001, alg1["algorithm"])
         param1, rest = der_decoder(
-            alg1['parameters'], asn1Spec=rfc4357.GostR3410_2001_PublicKeyParameters())
+            alg1["parameters"], asn1Spec=rfc4357.GostR3410_2001_PublicKeyParameters()
+        )
         self.assertFalse(rest)
         self.assertTrue(param1.prettyPrint())
-        self.assertEqual(alg1['parameters'], der_encoder(param1))
-        self.assertEqual(rfc4357.id_GostR3410_2001_CryptoPro_XchA_ParamSet, param1['publicKeyParamSet'])
-        self.assertEqual(rfc4357.id_GostR3411_94_CryptoProParamSet, param1['digestParamSet'])
+        self.assertEqual(alg1["parameters"], der_encoder(param1))
+        self.assertEqual(
+            rfc4357.id_GostR3410_2001_CryptoPro_XchA_ParamSet,
+            param1["publicKeyParamSet"],
+        )
+        self.assertEqual(
+            rfc4357.id_GostR3411_94_CryptoProParamSet, param1["digestParamSet"]
+        )
 
-        alg2 = ed['encryptedContentInfo']['contentEncryptionAlgorithm']        
-        self.assertEqual(rfc4357.id_Gost28147_89, alg2['algorithm'])
+        alg2 = ed["encryptedContentInfo"]["contentEncryptionAlgorithm"]
+        self.assertEqual(rfc4357.id_Gost28147_89, alg2["algorithm"])
         param2, rest = der_decoder(
-            alg2['parameters'], asn1Spec=rfc4357.Gost28147_89_Parameters())
+            alg2["parameters"], asn1Spec=rfc4357.Gost28147_89_Parameters()
+        )
         self.assertFalse(rest)
         self.assertTrue(param2.prettyPrint())
-        self.assertEqual(alg2['parameters'], der_encoder(param2))
-        self.assertEqual(8, len(param2['iv']))
-        self.assertEqual(rfc4357.id_Gost28147_89_CryptoPro_A_ParamSet, param2['encryptionParamSet'])
+        self.assertEqual(alg2["parameters"], der_encoder(param2))
+        self.assertEqual(8, len(param2["iv"]))
+        self.assertEqual(
+            rfc4357.id_Gost28147_89_CryptoPro_A_ParamSet, param2["encryptionParamSet"]
+        )
 
     def testOpenTypes(self):
         openTypeMap = {
@@ -242,28 +282,40 @@ BgYqhQMCAhUwEwQIvBCLHwv/NCkGByqFAwICHwGADKqOch3uT7Mu4w+hNw==
 
         substrate = pem.readBase64fromText(self.keytrans_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec,
-            openTypes=openTypeMap, decodeOpenTypes=True)
+            substrate,
+            asn1Spec=self.asn1Spec,
+            openTypes=openTypeMap,
+            decodeOpenTypes=True,
+        )
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        ri = asn1Object['content']['recipientInfos'][0]
-        alg1 = ri['ktri']['keyEncryptionAlgorithm']
-        self.assertEqual(rfc4357.id_GostR3410_2001, alg1['algorithm'])
-        param1 = alg1['parameters']
-        self.assertEqual(rfc4357.id_GostR3410_2001_CryptoPro_XchA_ParamSet, param1['publicKeyParamSet'])
-        self.assertEqual(rfc4357.id_GostR3411_94_CryptoProParamSet, param1['digestParamSet'])
+        ri = asn1Object["content"]["recipientInfos"][0]
+        alg1 = ri["ktri"]["keyEncryptionAlgorithm"]
+        self.assertEqual(rfc4357.id_GostR3410_2001, alg1["algorithm"])
+        param1 = alg1["parameters"]
+        self.assertEqual(
+            rfc4357.id_GostR3410_2001_CryptoPro_XchA_ParamSet,
+            param1["publicKeyParamSet"],
+        )
+        self.assertEqual(
+            rfc4357.id_GostR3411_94_CryptoProParamSet, param1["digestParamSet"]
+        )
 
-        alg2 = asn1Object['content']['encryptedContentInfo']['contentEncryptionAlgorithm']        
-        self.assertEqual(rfc4357.id_Gost28147_89, alg2['algorithm'])
-        param2 = alg2['parameters']
-        self.assertEqual(8, len(param2['iv']))
-        self.assertEqual(rfc4357.id_Gost28147_89_CryptoPro_A_ParamSet, param2['encryptionParamSet'])
+        alg2 = asn1Object["content"]["encryptedContentInfo"][
+            "contentEncryptionAlgorithm"
+        ]
+        self.assertEqual(rfc4357.id_Gost28147_89, alg2["algorithm"])
+        param2 = alg2["parameters"]
+        self.assertEqual(8, len(param2["iv"]))
+        self.assertEqual(
+            rfc4357.id_Gost28147_89_CryptoPro_A_ParamSet, param2["encryptionParamSet"]
+        )
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

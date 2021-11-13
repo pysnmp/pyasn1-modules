@@ -59,46 +59,49 @@ pgjZF3edo0Cez10epK+S
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_envelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_envelopedData, asn1Object["contentType"])
 
-        ed, rest = der_decoder(asn1Object['content'], rfc5652.EnvelopedData())
+        ed, rest = der_decoder(asn1Object["content"], rfc5652.EnvelopedData())
         self.assertFalse(rest)
         self.assertTrue(ed.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(ed))
+        self.assertEqual(asn1Object["content"], der_encoder(ed))
 
-        kwa = ed['recipientInfos'][0]['kekri']['keyEncryptionAlgorithm']
-        self.assertEqual(rfc4010.id_npki_app_cmsSeed_wrap, kwa['algorithm'])
+        kwa = ed["recipientInfos"][0]["kekri"]["keyEncryptionAlgorithm"]
+        self.assertEqual(rfc4010.id_npki_app_cmsSeed_wrap, kwa["algorithm"])
 
-        cea = ed['encryptedContentInfo']['contentEncryptionAlgorithm']
-        self.assertEqual(rfc4010.id_seedCBC, cea['algorithm'])
+        cea = ed["encryptedContentInfo"]["contentEncryptionAlgorithm"]
+        self.assertEqual(rfc4010.id_seedCBC, cea["algorithm"])
         param, rest = der_decoder(
-            cea['parameters'], asn1Spec=rfc4010.SeedCBCParameter())
+            cea["parameters"], asn1Spec=rfc4010.SeedCBCParameter()
+        )
         self.assertFalse(rest)
         self.assertTrue(param.prettyPrint())
-        self.assertEqual(cea['parameters'], der_encoder(param))
+        self.assertEqual(cea["parameters"], der_encoder(param))
 
-        iv = univ.OctetString(hexValue='424f47555349565f424f475553495621')
+        iv = univ.OctetString(hexValue="424f47555349565f424f475553495621")
         self.assertEqual(iv, param)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.env_data_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertTrue(asn1Object['contentType'] in rfc5652.cmsContentTypesMap.keys())
+        self.assertTrue(asn1Object["contentType"] in rfc5652.cmsContentTypesMap.keys())
 
-        kekri = asn1Object['content']['recipientInfos'][0]['kekri']
-        kwa = kekri['keyEncryptionAlgorithm']
-        self.assertEqual(rfc4010.id_npki_app_cmsSeed_wrap, kwa['algorithm'])
+        kekri = asn1Object["content"]["recipientInfos"][0]["kekri"]
+        kwa = kekri["keyEncryptionAlgorithm"]
+        self.assertEqual(rfc4010.id_npki_app_cmsSeed_wrap, kwa["algorithm"])
 
-        eci = asn1Object['content']['encryptedContentInfo']
-        cea = eci['contentEncryptionAlgorithm']
-        self.assertEqual(rfc4010.id_seedCBC, cea['algorithm'])
+        eci = asn1Object["content"]["encryptedContentInfo"]
+        cea = eci["contentEncryptionAlgorithm"]
+        self.assertEqual(rfc4010.id_seedCBC, cea["algorithm"])
 
-        iv = univ.OctetString(hexValue='424f47555349565f424f475553495621')
-        self.assertEqual(iv, cea['parameters'])
+        iv = univ.OctetString(hexValue="424f47555349565f424f475553495621")
+        self.assertEqual(iv, cea["parameters"])
+
 
 class SMIMECapabilitiesTestCase(unittest.TestCase):
     smime_capabilities_pem_text = "MB4wDAYIKoMajJpEAQQFADAOBgoqgxqMmkQHAQEBBQA="
@@ -113,11 +116,13 @@ class SMIMECapabilitiesTestCase(unittest.TestCase):
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        alg_oid_list = [ ]
+        alg_oid_list = []
         for cap in asn1Object:
-            self.assertTrue(cap['parameters'].hasValue())
-            self.assertEqual(cap['parameters'], der_encoder(rfc4010.SeedSMimeCapability("")))
-            alg_oid_list.append(cap['capabilityID'])
+            self.assertTrue(cap["parameters"].hasValue())
+            self.assertEqual(
+                cap["parameters"], der_encoder(rfc4010.SeedSMimeCapability(""))
+            )
+            alg_oid_list.append(cap["capabilityID"])
 
         self.assertIn(rfc4010.id_seedCBC, alg_oid_list)
         self.assertIn(rfc4010.id_npki_app_cmsSeed_wrap, alg_oid_list)
@@ -125,7 +130,6 @@ class SMIMECapabilitiesTestCase(unittest.TestCase):
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())
-

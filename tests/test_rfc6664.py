@@ -42,10 +42,11 @@ PQMBBwYFK4EEACIGBSuBBAAjMBoGCSqGSIb3DQEBCDANBglghkgBZQMEAgEFAA==
 
         count = 0
         for cap in asn1Object:
-            if cap['capabilityID'] in rfc5751.smimeCapabilityMap.keys():
-                substrate = cap['parameters']
+            if cap["capabilityID"] in rfc5751.smimeCapabilityMap.keys():
+                substrate = cap["parameters"]
                 cap_p, rest = der_decoder(
-                    substrate, asn1Spec=rfc5751.smimeCapabilityMap[cap['capabilityID']])
+                    substrate, asn1Spec=rfc5751.smimeCapabilityMap[cap["capabilityID"]]
+                )
                 self.assertFalse(rest)
                 self.assertTrue(cap_p.prettyPrint())
                 self.assertEqual(substrate, der_encoder(cap_p))
@@ -56,20 +57,21 @@ PQMBBwYFK4EEACIGBSuBBAAjMBoGCSqGSIb3DQEBCDANBglghkgBZQMEAgEFAA==
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         parameterValue = {
-            rfc6664.rsaEncryption: lambda x: x['maxKeySize'],
-            rfc6664.id_RSAES_OAEP: lambda x: x['maxKeySize'],
-            rfc6664.id_RSASSA_PSS: lambda x: x['minKeySize'],
-            rfc6664.id_dsa: lambda x: x['keySizes']['maxKeySize'],
-            rfc6664.dhpublicnumber: lambda x: x['keyParams']['q'] % 1023,
-            rfc6664.id_ecPublicKey: lambda x: x[0]['namedCurve'],
-            rfc6664.id_ecMQV: lambda x: x[1]['namedCurve'],
+            rfc6664.rsaEncryption: lambda x: x["maxKeySize"],
+            rfc6664.id_RSAES_OAEP: lambda x: x["maxKeySize"],
+            rfc6664.id_RSASSA_PSS: lambda x: x["minKeySize"],
+            rfc6664.id_dsa: lambda x: x["keySizes"]["maxKeySize"],
+            rfc6664.dhpublicnumber: lambda x: x["keyParams"]["q"] % 1023,
+            rfc6664.id_ecPublicKey: lambda x: x[0]["namedCurve"],
+            rfc6664.id_ecMQV: lambda x: x[1]["namedCurve"],
         }
 
         expectedValue = {
@@ -84,9 +86,9 @@ PQMBBwYFK4EEACIGBSuBBAAjMBoGCSqGSIb3DQEBCDANBglghkgBZQMEAgEFAA==
 
         count = 0
         for cap in asn1Object:
-            if cap['capabilityID'] in parameterValue.keys():
-                pValue = parameterValue[cap['capabilityID']](cap['parameters'])
-                eValue = expectedValue[cap['capabilityID']]
+            if cap["capabilityID"] in parameterValue.keys():
+                pValue = parameterValue[cap["capabilityID"]](cap["parameters"])
+                eValue = expectedValue[cap["capabilityID"]]
                 self.assertEqual(eValue, pValue)
                 count += 1
 
@@ -95,6 +97,6 @@ PQMBBwYFK4EEACIGBSuBBAAjMBoGCSqGSIb3DQEBCDANBglghkgBZQMEAgEFAA==
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

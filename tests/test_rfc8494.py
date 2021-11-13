@@ -36,19 +36,16 @@ EiIPVQPtvBuLBxjW5qx3TbXXo6vHJ1OhhLY=
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertEqual(
-            0, asn1Object['compressionAlgorithm']['algorithmID-ShortForm'])
+        self.assertEqual(0, asn1Object["compressionAlgorithm"]["algorithmID-ShortForm"])
 
-        cci = asn1Object['compressedContentInfo']
+        cci = asn1Object["compressedContentInfo"]
 
-        self.assertEqual(
-            25, cci['unnamed']['contentType-ShortForm'])
-        self.assertEqual(
-            '0x789c6d8fd1', cci['compressedContent'].prettyPrint()[:12])
+        self.assertEqual(25, cci["unnamed"]["contentType-ShortForm"])
+        self.assertEqual("0x789c6d8fd1", cci["compressedContent"].prettyPrint()[:12])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

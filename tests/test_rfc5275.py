@@ -86,25 +86,24 @@ KS1zJZvX/ury+ySGvKDLkfnqwZARR9W7TkTdx0L9W9oVjyEgOeGkvA==
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
 
-        layers = { }
+        layers = {}
         layers.update(rfc5652.cmsContentTypesMap)
 
         getNextLayer = {
-            rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContentType'],
-            rfc6402.id_cct_PKIData: lambda x: None
+            rfc5652.id_ct_contentInfo: lambda x: x["contentType"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContentType"],
+            rfc6402.id_cct_PKIData: lambda x: None,
         }
 
         getNextSubstrate = {
-            rfc5652.id_ct_contentInfo: lambda x: x['content'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContent'],
-            rfc6402.id_cct_PKIData: lambda x: None
+            rfc5652.id_ct_contentInfo: lambda x: x["content"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContent"],
+            rfc6402.id_cct_PKIData: lambda x: None,
         }
 
         next_layer = rfc5652.id_ct_contentInfo
         while next_layer:
-            asn1Object, rest = der_decoder(
-                substrate, asn1Spec=layers[next_layer])
+            asn1Object, rest = der_decoder(substrate, asn1Spec=layers[next_layer])
 
             self.assertFalse(rest)
             self.assertTrue(asn1Object.prettyPrint())
@@ -114,25 +113,24 @@ KS1zJZvX/ury+ySGvKDLkfnqwZARR9W7TkTdx0L9W9oVjyEgOeGkvA==
             next_layer = getNextLayer[next_layer](asn1Object)
 
         found_gl_use_kek = False
-        for ctrl in asn1Object['controlSequence']:
-            if ctrl['attrType'] == rfc5275.id_skd_glUseKEK:
+        for ctrl in asn1Object["controlSequence"]:
+            if ctrl["attrType"] == rfc5275.id_skd_glUseKEK:
                 cv, rest = der_decoder(
-                    ctrl['attrValues'][0],
-                    asn1Spec=rfc5652.cmsAttributesMap[ctrl['attrType']])
+                    ctrl["attrValues"][0],
+                    asn1Spec=rfc5652.cmsAttributesMap[ctrl["attrType"]],
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(cv.prettyPrint())
-                self.assertEqual(ctrl['attrValues'][0], der_encoder(cv))
+                self.assertEqual(ctrl["attrValues"][0], der_encoder(cv))
+
+                self.assertIn("example.com", cv["glInfo"]["glAddress"]["rfc822Name"])
 
                 self.assertIn(
-                    'example.com',
-                    cv['glInfo']['glAddress']['rfc822Name'])
+                    "example.com", cv["glOwnerInfo"][0]["glOwnerAddress"]["rfc822Name"]
+                )
 
-                self.assertIn(
-                    'example.com',
-                    cv['glOwnerInfo'][0]['glOwnerAddress']['rfc822Name'])
-
-                self.assertEqual(31, cv['glKeyAttributes']['duration'])
+                self.assertEqual(31, cv["glKeyAttributes"]["duration"])
                 found_gl_use_kek = True
 
         self.assertTrue(found_gl_use_kek)
@@ -140,39 +138,38 @@ KS1zJZvX/ury+ySGvKDLkfnqwZARR9W7TkTdx0L9W9oVjyEgOeGkvA==
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True)
+            substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        sd = asn1Object['content']
-        self.assertEqual(
-            rfc6402.id_cct_PKIData, sd['encapContentInfo']['eContentType'])
+        sd = asn1Object["content"]
+        self.assertEqual(rfc6402.id_cct_PKIData, sd["encapContentInfo"]["eContentType"])
 
         pkid, rest = der_decoder(
-            sd['encapContentInfo']['eContent'],
+            sd["encapContentInfo"]["eContent"],
             asn1Spec=rfc6402.PKIData(),
-            decodeOpenTypes=True)
+            decodeOpenTypes=True,
+        )
 
         self.assertFalse(rest)
         self.assertTrue(pkid.prettyPrint())
-        self.assertEqual(sd['encapContentInfo']['eContent'], der_encoder(pkid))
+        self.assertEqual(sd["encapContentInfo"]["eContent"], der_encoder(pkid))
 
         found_gl_use_kek = False
-        for ctrl in pkid['controlSequence']:
-            if ctrl['attrType'] == rfc5275.id_skd_glUseKEK:
-                cv = ctrl['attrValues'][0]
+        for ctrl in pkid["controlSequence"]:
+            if ctrl["attrType"] == rfc5275.id_skd_glUseKEK:
+                cv = ctrl["attrValues"][0]
+
+                self.assertIn("example.com", cv["glInfo"]["glAddress"]["rfc822Name"])
 
                 self.assertIn(
-                    'example.com',
-                    cv['glInfo']['glAddress']['rfc822Name'])
+                    "example.com", cv["glOwnerInfo"][0]["glOwnerAddress"]["rfc822Name"]
+                )
 
-                self.assertIn(
-                    'example.com',
-                    cv['glOwnerInfo'][0]['glOwnerAddress']['rfc822Name'])
-
-                self.assertEqual(31, cv['glKeyAttributes']['duration'])
+                self.assertEqual(31, cv["glKeyAttributes"]["duration"])
                 found_gl_use_kek = True
 
         self.assertTrue(found_gl_use_kek)
@@ -180,7 +177,7 @@ KS1zJZvX/ury+ySGvKDLkfnqwZARR9W7TkTdx0L9W9oVjyEgOeGkvA==
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)

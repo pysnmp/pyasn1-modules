@@ -18,7 +18,7 @@ from pyasn1.type import namedtype, tag, univ
 
 from pyasn1_modules import rfc5280
 
-MAX = float('inf')
+MAX = float("inf")
 
 
 AttributeType = rfc5280.AttributeType
@@ -52,13 +52,15 @@ class CertificationRequestInfo(univ.Sequence):
 
 
 CertificationRequestInfo.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('version', univ.Integer()),
-    namedtype.NamedType('subject', Name()),
-    namedtype.NamedType('subjectPKInfo', SubjectPublicKeyInfo()),
-    namedtype.NamedType('attributes',
-                        Attributes().subtype(implicitTag=tag.Tag(
-                            tag.tagClassContext, tag.tagFormatSimple, 0))
-    )
+    namedtype.NamedType("version", univ.Integer()),
+    namedtype.NamedType("subject", Name()),
+    namedtype.NamedType("subjectPKInfo", SubjectPublicKeyInfo()),
+    namedtype.NamedType(
+        "attributes",
+        Attributes().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0)
+        ),
+    ),
 )
 
 
@@ -67,7 +69,7 @@ class CertificationRequest(univ.Sequence):
 
 
 CertificationRequest.componentType = namedtype.NamedTypes(
-    namedtype.NamedType('certificationRequestInfo', CertificationRequestInfo()),
-    namedtype.NamedType('signatureAlgorithm', AlgorithmIdentifier()),
-    namedtype.NamedType('signature', univ.BitString())
+    namedtype.NamedType("certificationRequestInfo", CertificationRequestInfo()),
+    namedtype.NamedType("signatureAlgorithm", AlgorithmIdentifier()),
+    namedtype.NamedType("signature", univ.BitString()),
 )

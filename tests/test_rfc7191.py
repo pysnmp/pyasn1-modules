@@ -60,18 +60,18 @@ goRV+bq4fdgOOj25JFqa80xnXGtQqjm/7NSII5SbdJk+DT7KCkSbkElkbgQ=
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        sd, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.SignedData())
+        sd, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.SignedData())
 
-        for sa in sd['signerInfos'][0]['signedAttrs']:
-            sat = sa['attrType']
-            sav0 = sa['attrValues'][0]
+        for sa in sd["signerInfos"][0]["signedAttrs"]:
+            sat = sa["attrType"]
+            sav0 = sa["attrValues"][0]
 
             if sat == rfc7191.id_aa_KP_keyPkgIdAndReceiptReq:
                 sav, rest = der_decoder(
-                    sav0, asn1Spec=rfc7191.KeyPkgIdentifierAndReceiptReq())
+                    sav0, asn1Spec=rfc7191.KeyPkgIdentifierAndReceiptReq()
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(sav.prettyPrint())
@@ -80,27 +80,28 @@ goRV+bq4fdgOOj25JFqa80xnXGtQqjm/7NSII5SbdJk+DT7KCkSbkElkbgQ=
                 package_id_pem_text = "J7icVjsWIlGdF4cceb+siG3f+D0="
                 package_id = pem.readBase64fromText(package_id_pem_text)
 
-                self.assertEqual(package_id, sav['pkgID'])
+                self.assertEqual(package_id, sav["pkgID"])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.message1_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        v3 = rfc5652.CMSVersion().subtype(value='v3')
+        v3 = rfc5652.CMSVersion().subtype(value="v3")
 
-        self.assertEqual(v3, asn1Object['content']['version'])
+        self.assertEqual(v3, asn1Object["content"]["version"])
 
-        for sa in asn1Object['content']['signerInfos'][0]['signedAttrs']:
-            if sa['attrType'] == rfc7191.id_aa_KP_keyPkgIdAndReceiptReq:
+        for sa in asn1Object["content"]["signerInfos"][0]["signedAttrs"]:
+            if sa["attrType"] == rfc7191.id_aa_KP_keyPkgIdAndReceiptReq:
                 package_id_pem_text = "J7icVjsWIlGdF4cceb+siG3f+D0="
                 package_id = pem.readBase64fromText(package_id_pem_text)
-                self.assertEqual(package_id, sa['attrValues'][0]['pkgID'])
+                self.assertEqual(package_id, sa["attrValues"][0]["pkgID"])
 
 
 class ReceiptTestCase(unittest.TestCase):
@@ -139,67 +140,67 @@ bUcOYuCdivgxVuhlAgIxAPR9JavxziwCbVyBUWOAiKKYfglTgG3AwNmrKDj0NtXUQ9qDmGAc
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        sd, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.SignedData())
+        sd, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.SignedData())
 
         self.assertFalse(rest)
         self.assertTrue(sd.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(sd))
+        self.assertEqual(asn1Object["content"], der_encoder(sd))
 
-        oid = sd['encapContentInfo']['eContentType']
+        oid = sd["encapContentInfo"]["eContentType"]
 
         self.assertEqual(rfc7191.id_ct_KP_keyPackageReceipt, oid)
 
         receipt, rest = der_decoder(
-            sd['encapContentInfo']['eContent'],
-            asn1Spec=rfc7191.KeyPackageReceipt())
+            sd["encapContentInfo"]["eContent"], asn1Spec=rfc7191.KeyPackageReceipt()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(receipt.prettyPrint())
-        self.assertEqual(sd['encapContentInfo']['eContent'], der_encoder(receipt))
+        self.assertEqual(sd["encapContentInfo"]["eContent"], der_encoder(receipt))
 
         package_id_pem_text = "J7icVjsWIlGdF4cceb+siG3f+D0="
         package_id = pem.readBase64fromText(package_id_pem_text)
 
-        self.assertEqual(package_id, receipt['receiptOf']['pkgID'])
+        self.assertEqual(package_id, receipt["receiptOf"]["pkgID"])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.message2_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        v3 = rfc5652.CMSVersion().subtype(value='v3')
+        v3 = rfc5652.CMSVersion().subtype(value="v3")
 
-        self.assertEqual(v3, asn1Object['content']['version'])
+        self.assertEqual(v3, asn1Object["content"]["version"])
 
-        for sa in asn1Object['content']['signerInfos'][0]['signedAttrs']:
-            self.assertIn( sa['attrType'], rfc5652.cmsAttributesMap)
-            if sa['attrType'] == rfc5652.id_messageDigest:
-                self.assertIn(
-                    '0x412598a6ae2', sa['attrValues'][0].prettyPrint())
+        for sa in asn1Object["content"]["signerInfos"][0]["signedAttrs"]:
+            self.assertIn(sa["attrType"], rfc5652.cmsAttributesMap)
+            if sa["attrType"] == rfc5652.id_messageDigest:
+                self.assertIn("0x412598a6ae2", sa["attrValues"][0].prettyPrint())
 
-        ct_oid = asn1Object['content']['encapContentInfo']['eContentType']
+        ct_oid = asn1Object["content"]["encapContentInfo"]["eContentType"]
 
         self.assertIn(ct_oid, rfc5652.cmsContentTypesMap)
         self.assertEqual(ct_oid, rfc7191.id_ct_KP_keyPackageReceipt)
 
         # Since receipt is inside an OCTET STRING, decodeOpenTypes=True cannot
         # automatically decode it
-        sd_eci = asn1Object['content']['encapContentInfo']
+        sd_eci = asn1Object["content"]["encapContentInfo"]
         receipt, rest = der_decoder(
-            sd_eci['eContent'],
-            asn1Spec=rfc5652.cmsContentTypesMap[sd_eci['eContentType']])
+            sd_eci["eContent"],
+            asn1Spec=rfc5652.cmsContentTypesMap[sd_eci["eContentType"]],
+        )
         package_id_pem_text = "J7icVjsWIlGdF4cceb+siG3f+D0="
         package_id = pem.readBase64fromText(package_id_pem_text)
 
-        self.assertEqual(package_id, receipt['receiptOf']['pkgID'])
+        self.assertEqual(package_id, receipt["receiptOf"]["pkgID"])
 
 
 class ErrorTestCase(unittest.TestCase):
@@ -238,74 +239,73 @@ iNF8uKtW/lk0AjA7z2q40N0lamXkSU7ECasiWOYV1X4cWGiQwMZDKknBPDqXqB6Es6p4J+qe
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        sd, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.SignedData())
+        sd, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.SignedData())
 
         self.assertFalse(rest)
         self.assertTrue(sd.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(sd))
+        self.assertEqual(asn1Object["content"], der_encoder(sd))
 
-        oid = sd['encapContentInfo']['eContentType']
+        oid = sd["encapContentInfo"]["eContentType"]
 
         self.assertEqual(rfc7191.id_ct_KP_keyPackageError, oid)
 
         kpe, rest = der_decoder(
-            sd['encapContentInfo']['eContent'],
-            asn1Spec=rfc7191.KeyPackageError())
+            sd["encapContentInfo"]["eContent"], asn1Spec=rfc7191.KeyPackageError()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(kpe.prettyPrint())
-        self.assertEqual(sd['encapContentInfo']['eContent'], der_encoder(kpe))
+        self.assertEqual(sd["encapContentInfo"]["eContent"], der_encoder(kpe))
 
         package_id_pem_text = "J7icVjsWIlGdF4cceb+siG3f+D0="
         package_id = pem.readBase64fromText(package_id_pem_text)
 
-        self.assertEqual(package_id, kpe['errorOf']['pkgID'])
-        self.assertEqual(
-            rfc7191.EnumeratedErrorCode(value=10), kpe['errorCode'])
+        self.assertEqual(package_id, kpe["errorOf"]["pkgID"])
+        self.assertEqual(rfc7191.EnumeratedErrorCode(value=10), kpe["errorCode"])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.message3_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        v3 = rfc5652.CMSVersion().subtype(value='v3')
+        v3 = rfc5652.CMSVersion().subtype(value="v3")
 
-        self.assertEqual(v3, asn1Object['content']['version'])
+        self.assertEqual(v3, asn1Object["content"]["version"])
 
-        for sa in asn1Object['content']['signerInfos'][0]['signedAttrs']:
-            self.assertIn(sa['attrType'], rfc5652.cmsAttributesMap)
-            if sa['attrType'] == rfc5652.id_messageDigest:
-                self.assertIn(
-                    '0xa05c54d4737', sa['attrValues'][0].prettyPrint())
+        for sa in asn1Object["content"]["signerInfos"][0]["signedAttrs"]:
+            self.assertIn(sa["attrType"], rfc5652.cmsAttributesMap)
+            if sa["attrType"] == rfc5652.id_messageDigest:
+                self.assertIn("0xa05c54d4737", sa["attrValues"][0].prettyPrint())
 
-        ct_oid = asn1Object['content']['encapContentInfo']['eContentType']
+        ct_oid = asn1Object["content"]["encapContentInfo"]["eContentType"]
 
         self.assertIn(ct_oid, rfc5652.cmsContentTypesMap)
         self.assertEqual(rfc7191.id_ct_KP_keyPackageError, ct_oid)
 
         # Since receipt is inside an OCTET STRING, decodeOpenTypes=True cannot
         # automatically decode it
-        sd_eci = asn1Object['content']['encapContentInfo']
+        sd_eci = asn1Object["content"]["encapContentInfo"]
         kpe, rest = der_decoder(
-            sd_eci['eContent'],
-            asn1Spec=rfc5652.cmsContentTypesMap[sd_eci['eContentType']])
+            sd_eci["eContent"],
+            asn1Spec=rfc5652.cmsContentTypesMap[sd_eci["eContentType"]],
+        )
         package_id_pem_text = "J7icVjsWIlGdF4cceb+siG3f+D0="
         package_id = pem.readBase64fromText(package_id_pem_text)
 
-        self.assertEqual(package_id, kpe['errorOf']['pkgID'])
-        self.assertEqual(rfc7191.EnumeratedErrorCode(value=10), kpe['errorCode'])
+        self.assertEqual(package_id, kpe["errorOf"]["pkgID"])
+        self.assertEqual(rfc7191.EnumeratedErrorCode(value=10), kpe["errorCode"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

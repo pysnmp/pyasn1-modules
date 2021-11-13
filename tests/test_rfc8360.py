@@ -442,14 +442,14 @@ AgMA++8wCgIDAwAAAgMDNZs=
 
         oids = []
         for extn in asn1Object:
-            oids.append(extn['extnID'])
+            oids.append(extn["extnID"])
             extn_value, rest = der_decoder(
-                extn['extnValue'],
-                rfc5280.certificateExtensionsMap[extn['extnID']])
+                extn["extnValue"], rfc5280.certificateExtensionsMap[extn["extnID"]]
+            )
 
             self.assertFalse(rest)
             self.assertTrue(extn_value.prettyPrint())
-            self.assertEqual(extn['extnValue'], der_encoder(extn_value))
+            self.assertEqual(extn["extnValue"], der_encoder(extn_value))
 
         self.assertIn(rfc8360.id_pe_ipAddrBlocks_v2, oids)
         self.assertIn(rfc8360.id_pe_autonomousSysIds_v2, oids)
@@ -457,6 +457,6 @@ AgMA++8wCgIDAwAAAgMDNZs=
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

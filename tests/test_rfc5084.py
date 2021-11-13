@@ -94,26 +94,27 @@ BX7T4w681pCD+dOiom75C3UdahrfoFkNsZ2hB88+qNsEEPb/xuGu8ZzSPZhakhl2NS0=
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(
-            rfc5083.id_ct_authEnvelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5083.id_ct_authEnvelopedData, asn1Object["contentType"])
 
         aed, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5083.AuthEnvelopedData(),
-            decodeOpenTypes=True)
+            asn1Object["content"],
+            asn1Spec=rfc5083.AuthEnvelopedData(),
+            decodeOpenTypes=True,
+        )
 
         self.assertFalse(rest)
         self.assertTrue(aed.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(aed))
-        self.assertEqual(0, aed['version'])
+        self.assertEqual(asn1Object["content"], der_encoder(aed))
+        self.assertEqual(0, aed["version"])
 
-        cea = aed['authEncryptedContentInfo']['contentEncryptionAlgorithm']
+        cea = aed["authEncryptedContentInfo"]["contentEncryptionAlgorithm"]
 
-        self.assertEqual(rfc5084.id_aes128_GCM, cea['algorithm'])
-        self.assertEqual(16, cea['parameters']['aes-ICVlen'])
+        self.assertEqual(rfc5084.id_aes128_GCM, cea["algorithm"])
+        self.assertEqual(16, cea["parameters"]["aes-ICVlen"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

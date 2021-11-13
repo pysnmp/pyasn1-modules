@@ -32,58 +32,57 @@ DARIT1RQMCAGCyqGSIb3DQEJEAwLMREMD2t0YS5leGFtcGxlLmNvbQQEMTIzNA==
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap)
+        self.assertIn(asn1Object["contentType"], rfc5652.cmsContentTypesMap)
 
-        asn1Spec = rfc5652.cmsContentTypesMap[asn1Object['contentType']]
-        skp, rest = der_decoder(asn1Object['content'], asn1Spec=asn1Spec)
+        asn1Spec = rfc5652.cmsContentTypesMap[asn1Object["contentType"]]
+        skp, rest = der_decoder(asn1Object["content"], asn1Spec=asn1Spec)
 
         self.assertFalse(rest)
         self.assertTrue(skp.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(skp))
+        self.assertEqual(asn1Object["content"], der_encoder(skp))
 
-        for attr in skp['sKeyPkgAttrs']:
-            self.assertIn(attr['attrType'], rfc6031.sKeyPkgAttributesMap)
+        for attr in skp["sKeyPkgAttrs"]:
+            self.assertIn(attr["attrType"], rfc6031.sKeyPkgAttributesMap)
 
-        for osk in skp['sKeys']:
-            for attr in osk['sKeyAttrs']:
-                self.assertIn(attr['attrType'], rfc6031.sKeyAttributesMap)
+        for osk in skp["sKeys"]:
+            for attr in osk["sKeyAttrs"]:
+                self.assertIn(attr["attrType"], rfc6031.sKeyAttributesMap)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.key_pkg_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap)
-        self.assertTrue(asn1Object['content'].hasValue())
+        self.assertIn(asn1Object["contentType"], rfc5652.cmsContentTypesMap)
+        self.assertTrue(asn1Object["content"].hasValue())
 
-        keypkg = asn1Object['content']
+        keypkg = asn1Object["content"]
 
-        self.assertEqual(
-            rfc6031.KeyPkgVersion().subtype(value='v1'), keypkg['version'])
+        self.assertEqual(rfc6031.KeyPkgVersion().subtype(value="v1"), keypkg["version"])
 
-        for attr in keypkg['sKeyPkgAttrs']:
-            self.assertIn(attr['attrType'], rfc6031.sKeyPkgAttributesMap)
-            self.assertNotEqual('0x', attr['attrValues'][0].prettyPrint()[:2])
+        for attr in keypkg["sKeyPkgAttrs"]:
+            self.assertIn(attr["attrType"], rfc6031.sKeyPkgAttributesMap)
+            self.assertNotEqual("0x", attr["attrValues"][0].prettyPrint()[:2])
 
             # decodeOpenTypes=True did not decode if the value is shown in hex ...
-            if attr['attrType'] == rfc6031.id_pskc_manufacturer:
-                attr['attrValues'][0] == 'Vigil Security LLC'
+            if attr["attrType"] == rfc6031.id_pskc_manufacturer:
+                attr["attrValues"][0] == "Vigil Security LLC"
 
-        for osk in keypkg['sKeys']:
-            for attr in osk['sKeyAttrs']:
-                self.assertIn(attr['attrType'], rfc6031.sKeyAttributesMap)
-                self.assertNotEqual(
-                    '0x', attr['attrValues'][0].prettyPrint()[:2])
+        for osk in keypkg["sKeys"]:
+            for attr in osk["sKeyAttrs"]:
+                self.assertIn(attr["attrType"], rfc6031.sKeyAttributesMap)
+                self.assertNotEqual("0x", attr["attrValues"][0].prettyPrint()[:2])
 
                 # decodeOpenTypes=True did not decode if the value is shown in hex ...
-                if attr['attrType'] == rfc6031.id_pskc_issuer:
-                    attr['attrValues'][0] == 'kta.example.com'
+                if attr["attrType"] == rfc6031.id_pskc_issuer:
+                    attr["attrValues"][0] == "kta.example.com"
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite)

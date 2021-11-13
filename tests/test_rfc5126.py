@@ -39,20 +39,20 @@ l+AOeKdFgg==
         found_spid_oid = False
 
         for attr in asn1Object:
-            if attr['attrType'] in rfc5652.cmsAttributesMap.keys():
+            if attr["attrType"] in rfc5652.cmsAttributesMap.keys():
                 av, rest = der_decoder(
-                    attr['attrValues'][0],
-                    asn1Spec=rfc5652.cmsAttributesMap[attr['attrType']])
+                    attr["attrValues"][0],
+                    asn1Spec=rfc5652.cmsAttributesMap[attr["attrType"]],
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(av.prettyPrint())
-                self.assertEqual(attr['attrValues'][0], der_encoder(av))
+                self.assertEqual(attr["attrValues"][0], der_encoder(av))
 
-                if attr['attrType'] == rfc5126.id_aa_ets_sigPolicyId:
-                    spid_oid = rfc5126.SigPolicyId('1.3.6.1.4.1.22112.48.20')
+                if attr["attrType"] == rfc5126.id_aa_ets_sigPolicyId:
+                    spid_oid = rfc5126.SigPolicyId("1.3.6.1.4.1.22112.48.20")
 
-                    self.assertEqual(
-                        spid_oid, av['signaturePolicyId']['sigPolicyId'])
+                    self.assertEqual(spid_oid, av["signaturePolicyId"]["sigPolicyId"])
 
                     found_spid_oid = True
 
@@ -61,29 +61,30 @@ l+AOeKdFgg==
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         attr_type_list = []
-        spid_oid = rfc5126.SigPolicyId('1.3.6.1.4.1.22112.48.20')
+        spid_oid = rfc5126.SigPolicyId("1.3.6.1.4.1.22112.48.20")
 
         for attr in asn1Object:
-            if attr['attrType'] == rfc5126.id_aa_ets_sigPolicyId:
-                spid = attr['attrValues'][0]['signaturePolicyId']
-                self.assertEqual(spid_oid, spid['sigPolicyId'])
+            if attr["attrType"] == rfc5126.id_aa_ets_sigPolicyId:
+                spid = attr["attrValues"][0]["signaturePolicyId"]
+                self.assertEqual(spid_oid, spid["sigPolicyId"])
                 attr_type_list.append(rfc5126.id_aa_ets_sigPolicyId)
 
-            if attr['attrType'] == rfc5126.id_aa_ets_signerLocation:
-                cn = attr['attrValues'][0]['countryName']
-                self.assertEqual('US', cn['printableString'])
+            if attr["attrType"] == rfc5126.id_aa_ets_signerLocation:
+                cn = attr["attrValues"][0]["countryName"]
+                self.assertEqual("US", cn["printableString"])
                 attr_type_list.append(rfc5126.id_aa_ets_signerLocation)
 
-            if attr['attrType'] == rfc5126.id_aa_signingCertificateV2:
-                ha = attr['attrValues'][0]['certs'][0]['hashAlgorithm']
-                self.assertEqual(rfc4055.id_sha256, ha['algorithm'])
+            if attr["attrType"] == rfc5126.id_aa_signingCertificateV2:
+                ha = attr["attrValues"][0]["certs"][0]["hashAlgorithm"]
+                self.assertEqual(rfc4055.id_sha256, ha["algorithm"])
                 attr_type_list.append(rfc5126.id_aa_signingCertificateV2)
 
         self.assertIn(rfc5126.id_aa_ets_sigPolicyId, attr_type_list)
@@ -93,7 +94,7 @@ l+AOeKdFgg==
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)

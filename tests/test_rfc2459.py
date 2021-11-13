@@ -51,7 +51,8 @@ PhmcGcwTTYJBtYze4D1gCCAPRX5ron+jjBXu
         substrate = pem.readBase64fromText(self.pem_text)
 
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
@@ -88,7 +89,8 @@ vjnIhxTFoCb5vA==
         substrate = pem.readBase64fromText(self.pem_text)
 
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
@@ -127,7 +129,8 @@ INow2I3/ks+0MxDabTY=
         substrate = pem.readBase64fromText(self.pem_text)
 
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
@@ -136,6 +139,6 @@ INow2I3/ks+0MxDabTY=
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

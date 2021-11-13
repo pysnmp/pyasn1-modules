@@ -37,8 +37,7 @@ UwZ6TjS0Rfr+dRvlyilVjP+hPVwbyb7ZOSZR6zk=
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
@@ -46,18 +45,18 @@ UwZ6TjS0Rfr+dRvlyilVjP+hPVwbyb7ZOSZR6zk=
 
         found_kp_sipDomain = False
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
-                self.assertIn(
-                    extn['extnID'], rfc5280.certificateExtensionsMap)
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] == rfc5280.id_ce_extKeyUsage:
+                self.assertIn(extn["extnID"], rfc5280.certificateExtensionsMap)
 
                 ev, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.certificateExtensionsMap[extn["extnID"]],
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
-                self.assertEqual(extn['extnValue'], der_encoder(ev))
+                self.assertEqual(extn["extnValue"], der_encoder(ev))
                 self.assertIn(rfc5924.id_kp_sipDomain, ev)
 
                 found_kp_sipDomain = True
@@ -67,6 +66,6 @@ UwZ6TjS0Rfr+dRvlyilVjP+hPVwbyb7ZOSZR6zk=
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

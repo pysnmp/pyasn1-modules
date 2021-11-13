@@ -50,28 +50,26 @@ fIUedSwWYrcSnSa1pq2s3Wue+pNBfecEjYECMGrUNu1UpWdafEJulP9Vz76qOPMa
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.signed_message_pem_text)
-        asn1Object, rest = der_decoder (substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        sd, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.SignedData())
+        sd, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.SignedData())
 
         self.assertFalse(rest)
         self.assertTrue(sd.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(sd))
-       
-        for sa in sd['signerInfos'][0]['signedAttrs']:
-            sat = sa['attrType']
-            sav0 = sa['attrValues'][0]
+        self.assertEqual(asn1Object["content"], der_encoder(sd))
+
+        for sa in sd["signerInfos"][0]["signedAttrs"]:
+            sat = sa["attrType"]
+            sav0 = sa["attrValues"][0]
 
             if sat in rfc6211.id_aa_cmsAlgorithmProtect:
-                sav, rest = der_decoder(
-                    sav0, asn1Spec=rfc6211.CMSAlgorithmProtection())
+                sav, rest = der_decoder(sav0, asn1Spec=rfc6211.CMSAlgorithmProtection())
 
                 self.assertFalse(rest)
                 self.assertTrue(sav.prettyPrint())
@@ -80,41 +78,39 @@ fIUedSwWYrcSnSa1pq2s3Wue+pNBfecEjYECMGrUNu1UpWdafEJulP9Vz76qOPMa
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.signed_message_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap)
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertIn(asn1Object["contentType"], rfc5652.cmsContentTypesMap)
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        sd = asn1Object['content']
+        sd = asn1Object["content"]
 
-        self.assertEqual(
-            rfc5652.CMSVersion().subtype(value='v1'), sd['version'])
+        self.assertEqual(rfc5652.CMSVersion().subtype(value="v1"), sd["version"])
 
-        ect = sd['encapContentInfo']['eContentType']
+        ect = sd["encapContentInfo"]["eContentType"]
 
         self.assertIn(ect, rfc5652.cmsContentTypesMap)
         self.assertEqual(rfc5652.id_data, ect)
 
-        for sa in sd['signerInfos'][0]['signedAttrs']:
-            if sa['attrType'] == rfc6211.id_aa_cmsAlgorithmProtect:
-                self.assertIn(sa['attrType'], rfc5652.cmsAttributesMap)
-                
-                sav0 = sa['attrValues'][0]
-                digest_oid = univ.ObjectIdentifier('2.16.840.1.101.3.4.2.2')
-                sig_oid = univ.ObjectIdentifier('1.2.840.10045.4.3.3')
+        for sa in sd["signerInfos"][0]["signedAttrs"]:
+            if sa["attrType"] == rfc6211.id_aa_cmsAlgorithmProtect:
+                self.assertIn(sa["attrType"], rfc5652.cmsAttributesMap)
 
-                self.assertEqual(
-                    digest_oid, sav0['digestAlgorithm']['algorithm'])
-                self.assertEqual(
-                    sig_oid, sav0['signatureAlgorithm']['algorithm'])
+                sav0 = sa["attrValues"][0]
+                digest_oid = univ.ObjectIdentifier("2.16.840.1.101.3.4.2.2")
+                sig_oid = univ.ObjectIdentifier("1.2.840.10045.4.3.3")
+
+                self.assertEqual(digest_oid, sav0["digestAlgorithm"]["algorithm"])
+                self.assertEqual(sig_oid, sav0["signatureAlgorithm"]["algorithm"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

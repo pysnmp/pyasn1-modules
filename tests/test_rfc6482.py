@@ -57,15 +57,15 @@ IzU1
         layers.update(rfc5652.cmsContentTypesMap)
 
         getNextLayer = {
-            rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContentType'],
-            rfc6482.id_ct_routeOriginAuthz: lambda x: None
+            rfc5652.id_ct_contentInfo: lambda x: x["contentType"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContentType"],
+            rfc6482.id_ct_routeOriginAuthz: lambda x: None,
         }
 
         getNextSubstrate = {
-            rfc5652.id_ct_contentInfo: lambda x: x['content'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContent'],
-            rfc6482.id_ct_routeOriginAuthz: lambda x: None
+            rfc5652.id_ct_contentInfo: lambda x: x["content"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContent"],
+            rfc6482.id_ct_routeOriginAuthz: lambda x: None,
         }
 
         next_layer = rfc5652.id_ct_contentInfo
@@ -79,36 +79,37 @@ IzU1
             substrate = getNextSubstrate[next_layer](asn1Object)
             next_layer = getNextLayer[next_layer](asn1Object)
 
-        self.assertEqual(0, asn1Object['version'])
-        self.assertEqual(58363, asn1Object['asID'])
+        self.assertEqual(0, asn1Object["version"])
+        self.assertEqual(58363, asn1Object["asID"])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.roa_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True)
+            substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        oid = asn1Object['content']['encapContentInfo']['eContentType']
-        substrate = asn1Object['content']['encapContentInfo']['eContent']
+        oid = asn1Object["content"]["encapContentInfo"]["eContentType"]
+        substrate = asn1Object["content"]["encapContentInfo"]["eContent"]
 
         self.assertIn(oid, rfc5652.cmsContentTypesMap)
 
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=rfc5652.cmsContentTypesMap[oid],
-            decodeOpenTypes=True)
+            substrate, asn1Spec=rfc5652.cmsContentTypesMap[oid], decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(0, asn1Object['version'])
-        self.assertEqual(58363, asn1Object['asID'])
+        self.assertEqual(0, asn1Object["version"])
+        self.assertEqual(58363, asn1Object["asID"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

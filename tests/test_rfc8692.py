@@ -28,7 +28,7 @@ BQcGHzAKBggrBgEFBQcGIDAKBggrBgEFBQcGIQ==
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        
+
         oid_list = (
             rfc8692.id_shake128,
             rfc8692.id_shake256,
@@ -40,7 +40,7 @@ BQcGHzAKBggrBgEFBQcGIDAKBggrBgEFBQcGIQ==
 
         count = 0
         for algid in asn1Object:
-            self.assertTrue(algid['capabilityID'] in oid_list)
+            self.assertTrue(algid["capabilityID"] in oid_list)
             count += 1
 
         self.assertTrue(len(oid_list), count)
@@ -48,6 +48,6 @@ BQcGHzAKBggrBgEFBQcGIDAKBggrBgEFBQcGIQ==
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

@@ -45,7 +45,7 @@ Q4eikPk4LQey
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(1, asn1Object['acinfo']['version'])
+        self.assertEqual(1, asn1Object["acinfo"]["version"])
 
         attributeMap = {
             rfc3281.id_at_role: rfc3281.RoleSyntax(),
@@ -57,15 +57,16 @@ Q4eikPk4LQey
 
         count = 0
 
-        for attr in asn1Object['acinfo']['attributes']:
-            self.assertIn(attr['type'], attributeMap)
+        for attr in asn1Object["acinfo"]["attributes"]:
+            self.assertIn(attr["type"], attributeMap)
 
             av, rest = der_decoder(
-                attr['values'][0], asn1Spec=attributeMap[attr['type']])
+                attr["values"][0], asn1Spec=attributeMap[attr["type"]]
+            )
 
             self.assertFalse(rest)
             self.assertTrue(av.prettyPrint())
-            self.assertEqual(attr['values'][0], der_encoder(av))
+            self.assertEqual(attr["values"][0], der_encoder(av))
 
             count += 1
 
@@ -74,6 +75,6 @@ Q4eikPk4LQey
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

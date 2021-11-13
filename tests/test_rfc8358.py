@@ -16,7 +16,7 @@ from pyasn1_modules import pem, rfc5652, rfc8358
 
 class P7STestCase(unittest.TestCase):
     pem_text_list = (
-"""\
+        """\
 MIIJWgYJKoZIhvcNAQcCoIIJSzCCCUcCAQMxDTALBglghkgBZQMEAgEwDQYLKoZIhvcNAQkQ
 ARugggZ0MIIGcDCCBVigAwIBAgIRANa58hQvZ26svTWQaGtqo/YwDQYJKoZIhvcNAQELBQAw
 gZcxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcT
@@ -63,7 +63,7 @@ Peeubp+wSbuqN8Rh+koZU+HK7YpsR2bB4hL0GIwMA9lQjGSCxPCt1ViRL6zAWECzQC1YgLyc
 +xfAaJVDqFjxT5yKj3dCfy6XSDZq39AeX/w26/WfH+0ALRiViAAaMHSldbawVR/W3isecDWF
 tlU4NSJMLi/tTohe0QN1fjOaFryAvw==
 """,
-"""\
+        """\
 MIIJWgYJKoZIhvcNAQcCoIIJSzCCCUcCAQMxDTALBglghkgBZQMEAgEwDQYLKoZIhvcNAQkQ
 ARygggZ0MIIGcDCCBVigAwIBAgIRANa58hQvZ26svTWQaGtqo/YwDQYJKoZIhvcNAQELBQAw
 gZcxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcT
@@ -110,7 +110,7 @@ E18Pt/G2cqdw0NqOE7YEcFpsLGfikTWmGhnrcYUkt8odDDAv/vqZRt8DLkB56waQeQw0TLit
 8a/ybEb5gMZ3fsVLvvp6LhbJfqIvYgZO2uKXeKg3eLASD5nVY/Tuhnn2plhx+weKULGys0Ov
 zPKZ+N96KLerIBr3FmGByqhr3jNrBw==
 """,
-"""\
+        """\
 MIIJWgYJKoZIhvcNAQcCoIIJSzCCCUcCAQMxDTALBglghkgBZQMEAgEwDQYLKoZIhvcNAQkQ
 AR2gggZ0MIIGcDCCBVigAwIBAgIRANa58hQvZ26svTWQaGtqo/YwDQYJKoZIhvcNAQELBQAw
 gZcxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcT
@@ -157,13 +157,13 @@ cl6NS9hdH+aOWqQ3FE1c7VJNoQRDT7ztyKCrRJFPc4wZL8tsGkKp1lP4WcaStcbUJ65AdWPb
 S+VljWVifzXaR3pmTEQPhXH4nBa4K/HYytxofDP3EMli+imil2fFBbBedZkb5CIQ/Ly3soHZ
 dZlmZDkyeXJLpkNjRAsG6V82raZd9g==
 """,
-)
+    )
 
     def setUp(self):
         self.asn1Spec = rfc5652.ContentInfo()
 
     def testDerCodec(self):
-        oids = [ ]
+        oids = []
         for pem_text in self.pem_text_list:
             substrate = pem.readBase64fromText(pem_text)
             asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
@@ -171,15 +171,15 @@ dZlmZDkyeXJLpkNjRAsG6V82raZd9g==
             self.assertFalse(rest)
             self.assertTrue(asn1Object.prettyPrint())
             self.assertEqual(substrate, der_encoder(asn1Object))
-            self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+            self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-            sd, rest = der_decoder(asn1Object['content'], asn1Spec=rfc5652.SignedData())
+            sd, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.SignedData())
 
             self.assertFalse(rest)
             self.assertTrue(sd.prettyPrint())
-            self.assertEqual(asn1Object['content'], der_encoder(sd))
+            self.assertEqual(asn1Object["content"], der_encoder(sd))
 
-            oids.append(sd['encapContentInfo']['eContentType'])
+            oids.append(sd["encapContentInfo"]["eContentType"])
 
         self.assertIn(rfc8358.id_ct_asciiTextWithCRLF, oids)
         self.assertIn(rfc8358.id_ct_pdf, oids)
@@ -188,6 +188,6 @@ dZlmZDkyeXJLpkNjRAsG6V82raZd9g==
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

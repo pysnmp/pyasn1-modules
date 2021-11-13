@@ -39,19 +39,19 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
 """
 
     def testDerCodec(self):
-        layers = { }
+        layers = {}
         layers.update(rfc5652.cmsContentTypesMap)
 
         getNextLayer = {
-            rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContentType'],
-            rfc6402.id_cct_PKIData: lambda x: None
+            rfc5652.id_ct_contentInfo: lambda x: x["contentType"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContentType"],
+            rfc6402.id_cct_PKIData: lambda x: None,
         }
 
         getNextSubstrate = {
-            rfc5652.id_ct_contentInfo: lambda x: x['content'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContent'],
-            rfc6402.id_cct_PKIData: lambda x: None
+            rfc5652.id_ct_contentInfo: lambda x: x["content"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContent"],
+            rfc6402.id_cct_PKIData: lambda x: None,
         }
 
         substrate = pem.readBase64fromText(self.pem_text)
@@ -66,36 +66,35 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
             substrate = getNextSubstrate[next_layer](asn1Object)
             next_layer = getNextLayer[next_layer](asn1Object)
 
-
     def testOpenTypes(self):
         class ClientInformation(univ.Sequence):
             pass
 
         ClientInformation.componentType = namedtype.NamedTypes(
-            namedtype.NamedType('clientId', univ.Integer()),
-            namedtype.NamedType('MachineName', char.UTF8String()),
-            namedtype.NamedType('UserName', char.UTF8String()),
-            namedtype.NamedType('ProcessName', char.UTF8String())
+            namedtype.NamedType("clientId", univ.Integer()),
+            namedtype.NamedType("MachineName", char.UTF8String()),
+            namedtype.NamedType("UserName", char.UTF8String()),
+            namedtype.NamedType("ProcessName", char.UTF8String()),
         )
 
         class EnrollmentCSP(univ.Sequence):
             pass
 
         EnrollmentCSP.componentType = namedtype.NamedTypes(
-            namedtype.NamedType('KeySpec', univ.Integer()),
-            namedtype.NamedType('Name', char.BMPString()),
-            namedtype.NamedType('Signature', univ.BitString())
+            namedtype.NamedType("KeySpec", univ.Integer()),
+            namedtype.NamedType("Name", char.BMPString()),
+            namedtype.NamedType("Signature", univ.BitString()),
         )
 
         openTypeMap = {
             # attributes
-            univ.ObjectIdentifier('1.3.6.1.4.1.311.13.2.3'): char.IA5String(),
-            univ.ObjectIdentifier('1.3.6.1.4.1.311.13.2.2'): EnrollmentCSP(),
-            univ.ObjectIdentifier('1.3.6.1.4.1.311.21.20'): ClientInformation(),
+            univ.ObjectIdentifier("1.3.6.1.4.1.311.13.2.3"): char.IA5String(),
+            univ.ObjectIdentifier("1.3.6.1.4.1.311.13.2.2"): EnrollmentCSP(),
+            univ.ObjectIdentifier("1.3.6.1.4.1.311.21.20"): ClientInformation(),
             # algorithm identifier parameters
-            univ.ObjectIdentifier('1.2.840.113549.1.1.1'): univ.Null(""),
-            univ.ObjectIdentifier('1.2.840.113549.1.1.5'): univ.Null(""),
-            univ.ObjectIdentifier('1.2.840.113549.1.1.11'): univ.Null(""),
+            univ.ObjectIdentifier("1.2.840.113549.1.1.1"): univ.Null(""),
+            univ.ObjectIdentifier("1.2.840.113549.1.1.5"): univ.Null(""),
+            univ.ObjectIdentifier("1.2.840.113549.1.1.11"): univ.Null(""),
         }
 
         openTypeMap.update(rfc5652.cmsAttributesMap)
@@ -103,51 +102,55 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
 
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True)
+            substrate, asn1Spec=rfc5652.ContentInfo(), decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        eci = asn1Object['content']['encapContentInfo']
+        eci = asn1Object["content"]["encapContentInfo"]
 
-        self.assertEqual(rfc6402.id_cct_PKIData, eci['eContentType'])
+        self.assertEqual(rfc6402.id_cct_PKIData, eci["eContentType"])
 
-        substrate = eci['eContent']
+        substrate = eci["eContent"]
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=rfc6402.PKIData(), openTypes=openTypeMap,
-            decodeOpenTypes=True)
+            substrate,
+            asn1Spec=rfc6402.PKIData(),
+            openTypes=openTypeMap,
+            decodeOpenTypes=True,
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        for req in asn1Object['reqSequence']:
-            cr = req['tcr']['certificationRequest']
+        for req in asn1Object["reqSequence"]:
+            cr = req["tcr"]["certificationRequest"]
 
-            sig_alg = cr['signatureAlgorithm']
+            sig_alg = cr["signatureAlgorithm"]
 
-            self.assertIn(sig_alg['algorithm'], openTypeMap)
-            self.assertEqual(univ.Null(""), sig_alg['parameters'])
+            self.assertIn(sig_alg["algorithm"], openTypeMap)
+            self.assertEqual(univ.Null(""), sig_alg["parameters"])
 
-            cri = cr['certificationRequestInfo']
-            spki_alg = cri['subjectPublicKeyInfo']['algorithm']
+            cri = cr["certificationRequestInfo"]
+            spki_alg = cri["subjectPublicKeyInfo"]["algorithm"]
 
-            self.assertIn(spki_alg['algorithm'], openTypeMap)
-            self.assertEqual(univ.Null(""), spki_alg['parameters'])
+            self.assertIn(spki_alg["algorithm"], openTypeMap)
+            self.assertEqual(univ.Null(""), spki_alg["parameters"])
 
-            attrs = cr['certificationRequestInfo']['attributes']
+            attrs = cr["certificationRequestInfo"]["attributes"]
             for attr in attrs:
-                self.assertIn( attr['attrType'], openTypeMap)
+                self.assertIn(attr["attrType"], openTypeMap)
 
-                if attr['attrType'] == univ.ObjectIdentifier('1.3.6.1.4.1.311.13.2.3'):
-                    self.assertEqual("6.2.9200.2", attr['attrValues'][0])
+                if attr["attrType"] == univ.ObjectIdentifier("1.3.6.1.4.1.311.13.2.3"):
+                    self.assertEqual("6.2.9200.2", attr["attrValues"][0])
 
                 else:
-                    self.assertTrue(attr['attrValues'][0].hasValue())
+                    self.assertTrue(attr["attrValues"][0].hasValue())
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite)

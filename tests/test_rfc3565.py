@@ -48,14 +48,15 @@ class AESCBCTestCase(unittest.TestCase):
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.aes_alg_id_pem_text)
-        asn1Object, rest = der_decoder.decode(substrate,
-            asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        asn1Object, rest = der_decoder.decode(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(rfc3565.id_aes256_CBC, asn1Object[0])
 
-        aes_iv = univ.OctetString(hexValue='108996ba850e3f0339993bb5878a0e37')
+        aes_iv = univ.OctetString(hexValue="108996ba850e3f0339993bb5878a0e37")
 
         self.assertEqual(aes_iv, asn1Object[1])
         self.assertEqual(substrate, der_encoder.encode(asn1Object))
@@ -63,5 +64,5 @@ class AESCBCTestCase(unittest.TestCase):
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite)

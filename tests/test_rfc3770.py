@@ -48,37 +48,38 @@ DAlVlhox680Jxy5J8Pkx
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        sig_alg = asn1Object['tbsCertificate']['signature']
+        sig_alg = asn1Object["tbsCertificate"]["signature"]
 
-        self.assertEqual(rfc5480.ecdsa_with_SHA384, sig_alg['algorithm'])
-        self.assertFalse(sig_alg['parameters'].hasValue())
-    
-        spki_alg = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
+        self.assertEqual(rfc5480.ecdsa_with_SHA384, sig_alg["algorithm"])
+        self.assertFalse(sig_alg["parameters"].hasValue())
 
-        self.assertEqual(rfc5480.id_ecPublicKey, spki_alg['algorithm'])
-        self.assertEqual(
-            rfc5480.secp384r1, spki_alg['parameters']['namedCurve'])
+        spki_alg = asn1Object["tbsCertificate"]["subjectPublicKeyInfo"]["algorithm"]
+
+        self.assertEqual(rfc5480.id_ecPublicKey, spki_alg["algorithm"])
+        self.assertEqual(rfc5480.secp384r1, spki_alg["parameters"]["namedCurve"])
 
         extn_list = []
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            extn_list.append(extn['extnID'])
-            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            extn_list.append(extn["extnID"])
+            if extn["extnID"] in rfc5280.certificateExtensionsMap.keys():
                 extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.certificateExtensionsMap[extn["extnID"]],
+                )
 
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
-                if extn['extnID'] == rfc3770.id_pe_wlanSSID:
-                    self.assertIn(str2octs('Example'), extnValue)
+                if extn["extnID"] == rfc3770.id_pe_wlanSSID:
+                    self.assertIn(str2octs("Example"), extnValue)
 
-                if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
+                if extn["extnID"] == rfc5280.id_ce_extKeyUsage:
                     self.assertIn(rfc3770.id_kp_eapOverLAN, extnValue)
                     self.assertIn(rfc3770.id_kp_eapOverPPP, extnValue)
 
@@ -88,5 +89,5 @@ DAlVlhox680Jxy5J8Pkx
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite)

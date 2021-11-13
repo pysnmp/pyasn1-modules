@@ -54,22 +54,22 @@ T9yMtRLN5ZDU14y+Phzq9NKpSw/x5KyXoUKjCMc3Ru6dIW+CgcRQees+dhnvuD5U
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.signed_message_pem_text)
-        asn1Object, rest = der_decoder (substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        sd, rest = der_decoder(asn1Object['content'], asn1Spec=rfc5652.SignedData())
+        sd, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.SignedData())
 
         self.assertFalse(rest)
         self.assertTrue(sd.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(sd))
-       
-        for sa in sd['signerInfos'][0]['signedAttrs']:
-            sat = sa['attrType']
-            sav0 = sa['attrValues'][0]
+        self.assertEqual(asn1Object["content"], der_encoder(sd))
+
+        for sa in sd["signerInfos"][0]["signedAttrs"]:
+            sat = sa["attrType"]
+            sav0 = sa["attrValues"][0]
 
             if sat in rfc5652.cmsAttributesMap.keys():
                 sav, rest = der_decoder(sav0, asn1Spec=rfc5652.cmsAttributesMap[sat])
@@ -117,32 +117,29 @@ vFIgX7eIkd8=
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        sd, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.SignedData())
+        sd, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.SignedData())
 
         self.assertFalse(rest)
         self.assertTrue(sd.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(sd))
-        self.assertEqual(
-            rfc5035.id_ct_receipt, sd['encapContentInfo']['eContentType'])
+        self.assertEqual(asn1Object["content"], der_encoder(sd))
+        self.assertEqual(rfc5035.id_ct_receipt, sd["encapContentInfo"]["eContentType"])
 
         receipt, rest = der_decoder(
-            sd['encapContentInfo']['eContent'], asn1Spec=rfc5035.Receipt())
+            sd["encapContentInfo"]["eContent"], asn1Spec=rfc5035.Receipt()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(receipt.prettyPrint())
-        self.assertEqual(
-            sd['encapContentInfo']['eContent'], der_encoder(receipt))
+        self.assertEqual(sd["encapContentInfo"]["eContent"], der_encoder(receipt))
 
-        for sa in sd['signerInfos'][0]['signedAttrs']:
-            sat = sa['attrType']
-            sav0 = sa['attrValues'][0]
+        for sa in sd["signerInfos"][0]["signedAttrs"]:
+            sat = sa["attrType"]
+            sav0 = sa["attrValues"][0]
 
             if sat in rfc5652.cmsAttributesMap.keys():
-                sav, rest = der_decoder(
-                    sav0, asn1Spec=rfc5652.cmsAttributesMap[sat])
+                sav, rest = der_decoder(sav0, asn1Spec=rfc5652.cmsAttributesMap[sat])
                 self.assertFalse(rest)
                 self.assertTrue(sav.prettyPrint())
                 self.assertEqual(sav0, der_encoder(sav))
@@ -150,41 +147,41 @@ vFIgX7eIkd8=
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.signed_receipt_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertIn(asn1Object['contentType'], rfc5652.cmsContentTypesMap)
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertIn(asn1Object["contentType"], rfc5652.cmsContentTypesMap)
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        sd = asn1Object['content']
+        sd = asn1Object["content"]
 
-        self.assertEqual(
-            rfc5652.CMSVersion().subtype(value='v3'), sd['version'])
+        self.assertEqual(rfc5652.CMSVersion().subtype(value="v3"), sd["version"])
         self.assertIn(
-            sd['encapContentInfo']['eContentType'], rfc5652.cmsContentTypesMap)
-        self.assertEqual(
-            rfc5035.id_ct_receipt, sd['encapContentInfo']['eContentType'])
+            sd["encapContentInfo"]["eContentType"], rfc5652.cmsContentTypesMap
+        )
+        self.assertEqual(rfc5035.id_ct_receipt, sd["encapContentInfo"]["eContentType"])
 
-        for sa in sd['signerInfos'][0]['signedAttrs']:
-            self.assertIn(sa['attrType'], rfc5652.cmsAttributesMap)
-            if sa['attrType'] == rfc5035.id_aa_msgSigDigest:
-                self.assertIn(
-                    '0x167378', sa['attrValues'][0].prettyPrint()[:10])
+        for sa in sd["signerInfos"][0]["signedAttrs"]:
+            self.assertIn(sa["attrType"], rfc5652.cmsAttributesMap)
+            if sa["attrType"] == rfc5035.id_aa_msgSigDigest:
+                self.assertIn("0x167378", sa["attrValues"][0].prettyPrint()[:10])
 
         # Since receipt is inside an OCTET STRING, decodeOpenTypes=True cannot
-        # automatically decode it 
+        # automatically decode it
         receipt, rest = der_decoder(
-            sd['encapContentInfo']['eContent'],
-            asn1Spec=rfc5652.cmsContentTypesMap[sd['encapContentInfo']['eContentType']])
+            sd["encapContentInfo"]["eContent"],
+            asn1Spec=rfc5652.cmsContentTypesMap[sd["encapContentInfo"]["eContentType"]],
+        )
 
-        self.assertEqual(1, receipt['version'])
+        self.assertEqual(1, receipt["version"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

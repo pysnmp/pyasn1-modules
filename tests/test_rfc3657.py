@@ -58,50 +58,50 @@ bbRq5aYI2Rd3naNAns9dHqSvkg==
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc5652.id_envelopedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_envelopedData, asn1Object["contentType"])
 
-        ed, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc5652.EnvelopedData())
+        ed, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.EnvelopedData())
 
         self.assertFalse(rest)
         self.assertTrue(ed.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(ed))
+        self.assertEqual(asn1Object["content"], der_encoder(ed))
 
-        kwa = ed['recipientInfos'][0]['kekri']['keyEncryptionAlgorithm']
-        self.assertEqual(rfc3657.id_camellia128_wrap, kwa['algorithm'])
+        kwa = ed["recipientInfos"][0]["kekri"]["keyEncryptionAlgorithm"]
+        self.assertEqual(rfc3657.id_camellia128_wrap, kwa["algorithm"])
 
-        cea = ed['encryptedContentInfo']['contentEncryptionAlgorithm']
-        self.assertEqual(rfc3657.id_camellia128_cbc, cea['algorithm'])
-        param, rest = der_decoder(
-            cea['parameters'], asn1Spec=rfc3657.Camellia_IV())
+        cea = ed["encryptedContentInfo"]["contentEncryptionAlgorithm"]
+        self.assertEqual(rfc3657.id_camellia128_cbc, cea["algorithm"])
+        param, rest = der_decoder(cea["parameters"], asn1Spec=rfc3657.Camellia_IV())
 
         self.assertFalse(rest)
         self.assertTrue(param.prettyPrint())
-        self.assertEqual(cea['parameters'], der_encoder(param))
+        self.assertEqual(cea["parameters"], der_encoder(param))
 
-        iv = rfc3657.Camellia_IV(hexValue='424f47555349565f424f475553495621')
+        iv = rfc3657.Camellia_IV(hexValue="424f47555349565f424f475553495621")
         self.assertEqual(iv, param)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.env_data_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertTrue(asn1Object['contentType'] in rfc5652.cmsContentTypesMap.keys())
+        self.assertTrue(asn1Object["contentType"] in rfc5652.cmsContentTypesMap.keys())
 
-        kekri = asn1Object['content']['recipientInfos'][0]['kekri']
-        kwa = kekri['keyEncryptionAlgorithm']
-        self.assertEqual(rfc3657.id_camellia128_wrap, kwa['algorithm'])
+        kekri = asn1Object["content"]["recipientInfos"][0]["kekri"]
+        kwa = kekri["keyEncryptionAlgorithm"]
+        self.assertEqual(rfc3657.id_camellia128_wrap, kwa["algorithm"])
 
-        eci = asn1Object['content']['encryptedContentInfo']
-        cea = eci['contentEncryptionAlgorithm']
-        self.assertEqual(rfc3657.id_camellia128_cbc, cea['algorithm'])
+        eci = asn1Object["content"]["encryptedContentInfo"]
+        cea = eci["contentEncryptionAlgorithm"]
+        self.assertEqual(rfc3657.id_camellia128_cbc, cea["algorithm"])
 
-        iv = rfc3657.Camellia_IV(hexValue='424f47555349565f424f475553495621')
-        self.assertEqual(iv, cea['parameters'])
+        iv = rfc3657.Camellia_IV(hexValue="424f47555349565f424f475553495621")
+        self.assertEqual(iv, cea["parameters"])
+
 
 class SMIMECapabilitiesTestCase(unittest.TestCase):
     smime_capabilities_pem_text = """\
@@ -128,12 +128,12 @@ Sz0BAQMEBQA=
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
- 
+
         param = der_encoder(rfc3657.CamelliaSMimeCapability(""))
         count = 0
         for cap in asn1Object:
-            self.assertEqual(cap['parameters'], param)
-            self.assertTrue(cap['capabilityID'] in alg_oid_list)
+            self.assertEqual(cap["parameters"], param)
+            self.assertTrue(cap["capabilityID"] in alg_oid_list)
             count += 1
 
         self.assertEqual(count, 6)
@@ -141,17 +141,18 @@ Sz0BAQMEBQA=
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.smime_capabilities_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
- 
+
         param = rfc3657.CamelliaSMimeCapability("")
         count = 0
         for cap in asn1Object:
-            self.assertTrue(cap['capabilityID'] in rfc5751.smimeCapabilityMap.keys())
-            self.assertEqual(cap['parameters'], param)
+            self.assertTrue(cap["capabilityID"] in rfc5751.smimeCapabilityMap.keys())
+            self.assertEqual(cap["parameters"], param)
             count += 1
 
         self.assertEqual(count, 6)
@@ -159,6 +160,6 @@ Sz0BAQMEBQA=
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

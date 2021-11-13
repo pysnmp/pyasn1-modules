@@ -139,10 +139,10 @@ m9Y=
         unk_count = 0
 
         for item in asn1Object:
-            if item.getName() == 'cert':
+            if item.getName() == "cert":
                 cert_count += 1
 
-            elif item.getName() == 'crl':
+            elif item.getName() == "crl":
                 crl_count += 1
 
             else:
@@ -155,5 +155,5 @@ m9Y=
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite)

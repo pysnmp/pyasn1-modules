@@ -47,7 +47,8 @@ DAlVlhox680Jxy5J8Pkx
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
@@ -55,19 +56,20 @@ DAlVlhox680Jxy5J8Pkx
 
         extn_list = []
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            extn_list.append(extn['extnID'])
-            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            extn_list.append(extn["extnID"])
+            if extn["extnID"] in rfc5280.certificateExtensionsMap.keys():
                 extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.certificateExtensionsMap[extn["extnID"]],
+                )
 
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
-                if extn['extnID'] == rfc4334.id_pe_wlanSSID:
-                    self.assertIn( str2octs('Example'), extnValue)
-            
-                if extn['extnID'] == rfc5280.id_ce_extKeyUsage:
+                if extn["extnID"] == rfc4334.id_pe_wlanSSID:
+                    self.assertIn(str2octs("Example"), extnValue)
+
+                if extn["extnID"] == rfc5280.id_ce_extKeyUsage:
                     self.assertIn(rfc4334.id_kp_eapOverLAN, extnValue)
                     self.assertIn(rfc4334.id_kp_eapOverPPP, extnValue)
 
@@ -77,5 +79,5 @@ DAlVlhox680Jxy5J8Pkx
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite)

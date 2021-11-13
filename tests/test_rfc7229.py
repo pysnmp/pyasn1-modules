@@ -51,34 +51,34 @@ PZs8K3IjUA5+U73pA8lpaTOPscLY22WL9pAGmyVUyEJ8lM7E+r4iDg==
         ]
 
         substrate = pem.readBase64fromText(self.pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         count = 0
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
-                s = extn['extnValue']
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] in rfc5280.certificateExtensionsMap.keys():
+                s = extn["extnValue"]
                 ev, rest = der_decoder(
-                    s, rfc5280.certificateExtensionsMap[extn['extnID']])
+                    s, rfc5280.certificateExtensionsMap[extn["extnID"]]
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(ev.prettyPrint())
                 self.assertEqual(s, der_encoder(ev))
 
-                if extn['extnID'] == rfc5280.id_ce_certificatePolicies:
+                if extn["extnID"] == rfc5280.id_ce_certificatePolicies:
                     for pol in ev:
-                        if pol['policyIdentifier'] in test_oids:
+                        if pol["policyIdentifier"] in test_oids:
                             count += 1
 
-                if extn['extnID'] == rfc5280.id_ce_policyMappings:
+                if extn["extnID"] == rfc5280.id_ce_policyMappings:
                     for pmap in ev:
-                        if pmap['issuerDomainPolicy'] in test_oids:
+                        if pmap["issuerDomainPolicy"] in test_oids:
                             count += 1
-                        if pmap['subjectDomainPolicy'] in test_oids:
+                        if pmap["subjectDomainPolicy"] in test_oids:
                             count += 1
 
         self.assertEqual(6, count)
@@ -86,6 +86,6 @@ PZs8K3IjUA5+U73pA8lpaTOPscLY22WL9pAGmyVUyEJ8lM7E+r4iDg==
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

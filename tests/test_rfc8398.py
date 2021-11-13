@@ -26,39 +26,42 @@ class EAITestCase(unittest.TestCase):
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertIn(asn1Object['otherName']['type-id'],
-                      rfc5280.anotherNameMap)
-        self.assertEqual(rfc8398.id_on_SmtpUTF8Mailbox,
-                         asn1Object['otherName']['type-id'])
+        self.assertIn(asn1Object["otherName"]["type-id"], rfc5280.anotherNameMap)
+        self.assertEqual(
+            rfc8398.id_on_SmtpUTF8Mailbox, asn1Object["otherName"]["type-id"]
+        )
 
         eai, rest = der_decoder(
-            asn1Object['otherName']['value'],
-            asn1Spec=rfc5280.anotherNameMap[asn1Object['otherName']['type-id']])
+            asn1Object["otherName"]["value"],
+            asn1Spec=rfc5280.anotherNameMap[asn1Object["otherName"]["type-id"]],
+        )
 
         self.assertFalse(rest)
         self.assertTrue(eai.prettyPrint())
-        self.assertEqual(asn1Object['otherName']['value'], der_encoder(eai))
-        self.assertEqual(u'\u8001', eai[0])
-        self.assertEqual(u'\u5E2B', eai[1])
+        self.assertEqual(asn1Object["otherName"]["value"], der_encoder(eai))
+        self.assertEqual(u"\u8001", eai[0])
+        self.assertEqual(u"\u5E2B", eai[1])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         self.assertEqual(
-            rfc8398.id_on_SmtpUTF8Mailbox, asn1Object['otherName']['type-id'])
-        self.assertEqual(u'\u8001', asn1Object['otherName']['value'][0])
+            rfc8398.id_on_SmtpUTF8Mailbox, asn1Object["otherName"]["type-id"]
+        )
+        self.assertEqual(u"\u8001", asn1Object["otherName"]["value"][0])
 
-        self.assertEqual(u'\u5E2B', asn1Object['otherName']['value'][1])
+        self.assertEqual(u"\u5E2B", asn1Object["otherName"]["value"][1])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

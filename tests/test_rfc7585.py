@@ -47,8 +47,7 @@ Jiw8B0yjkokwojxyRGftMT8uxNjWQVsMDbxl
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
-        asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
@@ -57,28 +56,28 @@ Jiw8B0yjkokwojxyRGftMT8uxNjWQVsMDbxl
         nai_realm_oid = rfc7585.id_on_naiRealm
         nai_realm_found = False
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] == rfc5280.id_ce_subjectAltName:
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] == rfc5280.id_ce_subjectAltName:
                 extnValue, rest = der_decoder(
-                    extn['extnValue'], asn1Spec=rfc5280.SubjectAltName())
+                    extn["extnValue"], asn1Spec=rfc5280.SubjectAltName()
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
                 for gn in extnValue:
-                    if gn['otherName'].hasValue():
-                        self.assertEqual(
-                            nai_realm_oid, gn['otherName']['type-id'])
+                    if gn["otherName"].hasValue():
+                        self.assertEqual(nai_realm_oid, gn["otherName"]["type-id"])
 
                         onValue, rest = der_decoder(
-                            gn['otherName']['value'], asn1Spec=rfc7585.NAIRealm())
+                            gn["otherName"]["value"], asn1Spec=rfc7585.NAIRealm()
+                        )
 
                         self.assertFalse(rest)
                         self.assertTrue(onValue.prettyPrint())
-                        self.assertEqual(
-                            gn['otherName']['value'], der_encoder(onValue))
-                        self.assertIn('example', onValue)
+                        self.assertEqual(gn["otherName"]["value"], der_encoder(onValue))
+                        self.assertIn("example", onValue)
 
                         nai_realm_found = True
 
@@ -87,7 +86,8 @@ Jiw8B0yjkokwojxyRGftMT8uxNjWQVsMDbxl
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
@@ -96,21 +96,22 @@ Jiw8B0yjkokwojxyRGftMT8uxNjWQVsMDbxl
         nai_realm_oid = rfc7585.id_on_naiRealm
         nai_realm_found = False
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] == rfc5280.id_ce_subjectAltName:
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] == rfc5280.id_ce_subjectAltName:
                 extnValue, rest = der_decoder(
-                    extn['extnValue'], asn1Spec=rfc5280.SubjectAltName(),
-                    decodeOpenTypes=True)
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.SubjectAltName(),
+                    decodeOpenTypes=True,
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
                 for gn in extnValue:
-                    if gn['otherName'].hasValue():
-                        self.assertEqual(
-                            nai_realm_oid, gn['otherName']['type-id'])
-                        self.assertIn('example', gn['otherName']['value'])
+                    if gn["otherName"].hasValue():
+                        self.assertEqual(nai_realm_oid, gn["otherName"]["type-id"])
+                        self.assertIn("example", gn["otherName"]["value"])
 
                         nai_realm_found = True
 
@@ -119,6 +120,6 @@ Jiw8B0yjkokwojxyRGftMT8uxNjWQVsMDbxl
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

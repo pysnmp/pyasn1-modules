@@ -125,18 +125,18 @@ toMsV8fLBpBjA5YGQvd3TAcSw1lNbWpArL+hje1dzQ7pxslnkklv3CTxAjBuVebz
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         for attr in asn1Object:
-            self.assertIn(attr['type'], rfc5652.cmsAttributesMap)
+            self.assertIn(attr["type"], rfc5652.cmsAttributesMap)
 
             av, rest = der_decoder(
-                attr['values'][0],
-                asn1Spec=rfc5652.cmsAttributesMap[attr['type']])
+                attr["values"][0], asn1Spec=rfc5652.cmsAttributesMap[attr["type"]]
+            )
 
             self.assertFalse(rest)
             self.assertTrue(av.prettyPrint())
-            self.assertEqual(attr['values'][0], der_encoder(av))
+            self.assertEqual(attr["values"][0], der_encoder(av))
 
-            if attr['type'] == rfc7906.id_aa_KP_contentDecryptKeyID:
-                self.assertEqual(univ.OctetString(hexValue='7906'), av)
+            if attr["type"] == rfc7906.id_aa_KP_contentDecryptKeyID:
+                self.assertEqual(univ.OctetString(hexValue="7906"), av)
 
     def testOpenTypes(self):
         openTypesMap = rfc5280.certificateAttributesMap.copy()
@@ -144,21 +144,23 @@ toMsV8fLBpBjA5YGQvd3TAcSw1lNbWpArL+hje1dzQ7pxslnkklv3CTxAjBuVebz
 
         substrate = pem.readBase64fromText(self.attr_set_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, openTypes=openTypesMap,
-            decodeOpenTypes=True)
+            substrate,
+            asn1Spec=self.asn1Spec,
+            openTypes=openTypesMap,
+            decodeOpenTypes=True,
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         for attr in asn1Object:
-            if attr['type'] == rfc7906.id_aa_KP_contentDecryptKeyID:
-                self.assertEqual(
-                    univ.OctetString(hexValue='7906'), attr['values'][0])
+            if attr["type"] == rfc7906.id_aa_KP_contentDecryptKeyID:
+                self.assertEqual(univ.OctetString(hexValue="7906"), attr["values"][0])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

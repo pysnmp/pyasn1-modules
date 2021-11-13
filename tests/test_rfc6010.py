@@ -27,18 +27,16 @@ class UnconstrainedCCCExtensionTestCase(unittest.TestCase):
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(
-            rfc6010.id_pe_cmsContentConstraints, asn1Object['extnID'])
+        self.assertEqual(rfc6010.id_pe_cmsContentConstraints, asn1Object["extnID"])
 
         evalue, rest = der_decoder(
-            asn1Object['extnValue'],
-            asn1Spec=rfc6010.CMSContentConstraints())
+            asn1Object["extnValue"], asn1Spec=rfc6010.CMSContentConstraints()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(evalue.prettyPrint())
-        self.assertEqual(asn1Object['extnValue'], der_encoder(evalue))
-        self.assertEqual(
-            rfc6010.id_ct_anyContentType, evalue[0]['contentType'])
+        self.assertEqual(asn1Object["extnValue"], der_encoder(evalue))
+        self.assertEqual(rfc6010.id_ct_anyContentType, evalue[0]["contentType"])
 
 
 class ConstrainedCCCExtensionTestCase(unittest.TestCase):
@@ -59,16 +57,15 @@ KoZIhvcNAQkQDAsxEQwPa3RhLmV4YW1wbGUuY29tMA4GCSqGSIb3DQEHAQoBAQ==
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(
-            rfc6010.id_pe_cmsContentConstraints, asn1Object['extnID'])
+        self.assertEqual(rfc6010.id_pe_cmsContentConstraints, asn1Object["extnID"])
 
         evalue, rest = der_decoder(
-            asn1Object['extnValue'],
-            asn1Spec=rfc6010.CMSContentConstraints())
+            asn1Object["extnValue"], asn1Spec=rfc6010.CMSContentConstraints()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(evalue.prettyPrint())
-        self.assertEqual(asn1Object['extnValue'], der_encoder(evalue))
+        self.assertEqual(asn1Object["extnValue"], der_encoder(evalue))
 
         constraint_count = 0
         attribute_count = 0
@@ -76,10 +73,10 @@ KoZIhvcNAQkQDAsxEQwPa3RhLmV4YW1wbGUuY29tMA4GCSqGSIb3DQEHAQoBAQ==
 
         for ccc in evalue:
             constraint_count += 1
-            if ccc['canSource'] == 1:
+            if ccc["canSource"] == 1:
                 cannot_count += 1
-            if ccc['attrConstraints'].hasValue():
-                for attr in ccc['attrConstraints']:
+            if ccc["attrConstraints"].hasValue():
+                for attr in ccc["attrConstraints"]:
                     attribute_count += 1
 
         self.assertEqual(4, constraint_count)
@@ -90,10 +87,10 @@ KoZIhvcNAQkQDAsxEQwPa3RhLmV4YW1wbGUuY29tMA4GCSqGSIb3DQEHAQoBAQ==
         substrate = pem.readBase64fromText(self.constrained_pem_text)
         asn1Object, rest = der_decoder(substrate, asn1Spec=self.asn1Spec)
 
-        self.assertIn(asn1Object['extnID'], rfc5280.certificateExtensionsMap)
+        self.assertIn(asn1Object["extnID"], rfc5280.certificateExtensionsMap)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite)

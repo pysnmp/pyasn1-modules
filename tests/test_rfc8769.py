@@ -39,24 +39,23 @@ I2hw+am26W+PRyltVVGUAISHM2kA4tG39HcxEQi+6HJx
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        
-        layers = { }
+
+        layers = {}
         layers.update(rfc5652.cmsContentTypesMap)
 
         getNextLayer = {
-            rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContentType'],
+            rfc5652.id_ct_contentInfo: lambda x: x["contentType"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContentType"],
         }
 
         getNextSubstrate = {
-            rfc5652.id_ct_contentInfo: lambda x: x['content'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContent'],
+            rfc5652.id_ct_contentInfo: lambda x: x["content"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContent"],
         }
 
         next_layer = rfc5652.id_ct_contentInfo
         while next_layer in layers:
-            asn1Object, rest = der_decoder(
-                substrate, asn1Spec=layers[next_layer])
+            asn1Object, rest = der_decoder(substrate, asn1Spec=layers[next_layer])
 
             self.assertFalse(rest)
             self.assertTrue(asn1Object.prettyPrint())
@@ -94,24 +93,23 @@ I06um+ATKQzUcbgq0PCKA7T31pAq46fsWc5tA+mMARTrxZjSXsDneeAWpw==
 
     def testDerCodec(self):
         substrate = pem.readBase64fromText(self.pem_text)
-        
-        layers = { }
+
+        layers = {}
         layers.update(rfc5652.cmsContentTypesMap)
 
         getNextLayer = {
-            rfc5652.id_ct_contentInfo: lambda x: x['contentType'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContentType'],
+            rfc5652.id_ct_contentInfo: lambda x: x["contentType"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContentType"],
         }
 
         getNextSubstrate = {
-            rfc5652.id_ct_contentInfo: lambda x: x['content'],
-            rfc5652.id_signedData: lambda x: x['encapContentInfo']['eContent'],
+            rfc5652.id_ct_contentInfo: lambda x: x["content"],
+            rfc5652.id_signedData: lambda x: x["encapContentInfo"]["eContent"],
         }
 
         next_layer = rfc5652.id_ct_contentInfo
         while next_layer in layers:
-            asn1Object, rest = der_decoder(
-                substrate, asn1Spec=layers[next_layer])
+            asn1Object, rest = der_decoder(substrate, asn1Spec=layers[next_layer])
 
             self.assertFalse(rest)
             self.assertTrue(asn1Object.prettyPrint())
@@ -125,7 +123,7 @@ I06um+ATKQzUcbgq0PCKA7T31pAq46fsWc5tA+mMARTrxZjSXsDneeAWpw==
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)

@@ -126,104 +126,124 @@ HktMK+isIjxOTk4yJTOOAgIH0A==
         openTypesMap.update(rfc5652.cmsAttributesMap)
 
         for attr in asn1Object:
-            self.assertIn(attr['type'], openTypesMap)
+            self.assertIn(attr["type"], openTypesMap)
 
             av, rest = der_decoder(
-                attr['values'][0], asn1Spec=openTypesMap[attr['type']])
+                attr["values"][0], asn1Spec=openTypesMap[attr["type"]]
+            )
 
             self.assertFalse(rest)
             self.assertTrue(av.prettyPrint())
-            self.assertEqual(attr['values'][0], der_encoder(av))
+            self.assertEqual(attr["values"][0], der_encoder(av))
 
-            if attr['type'] == rfc2985.pkcs_9_at_userPKCS12:
+            if attr["type"] == rfc2985.pkcs_9_at_userPKCS12:
 
-                self.assertEqual(univ.Integer(3), av['version'])
-                self.assertEqual(rfc5652.id_data, av['authSafe']['contentType'])
+                self.assertEqual(univ.Integer(3), av["version"])
+                self.assertEqual(rfc5652.id_data, av["authSafe"]["contentType"])
 
                 outdata, rest = der_decoder(
-                    av['authSafe']['content'], asn1Spec=univ.OctetString())
+                    av["authSafe"]["content"], asn1Spec=univ.OctetString()
+                )
 
                 self.assertFalse(rest)
 
                 authsafe, rest = der_decoder(
-                    outdata, asn1Spec=rfc7292.AuthenticatedSafe())
+                    outdata, asn1Spec=rfc7292.AuthenticatedSafe()
+                )
 
                 self.assertFalse(rest)
 
                 for ci in authsafe:
-                    self.assertEqual(rfc5652.id_data, ci['contentType'])
+                    self.assertEqual(rfc5652.id_data, ci["contentType"])
 
                     indata, rest = der_decoder(
-                        ci['content'], asn1Spec=univ.OctetString())
+                        ci["content"], asn1Spec=univ.OctetString()
+                    )
 
                     self.assertFalse(rest)
 
-                    sc, rest = der_decoder(
-                        indata, asn1Spec=rfc7292.SafeContents())
+                    sc, rest = der_decoder(indata, asn1Spec=rfc7292.SafeContents())
 
                     self.assertFalse(rest)
 
                     for sb in sc:
-                        if sb['bagId'] in rfc7292.pkcs12BagTypeMap:
+                        if sb["bagId"] in rfc7292.pkcs12BagTypeMap:
                             bv, rest = der_decoder(
-                                sb['bagValue'], asn1Spec=rfc7292.pkcs12BagTypeMap[sb['bagId']])
+                                sb["bagValue"],
+                                asn1Spec=rfc7292.pkcs12BagTypeMap[sb["bagId"]],
+                            )
 
                             self.assertFalse(rest)
 
-                            for bagattr in sb['bagAttributes']:
-                                if bagattr['attrType'] in openTypesMap:
+                            for bagattr in sb["bagAttributes"]:
+                                if bagattr["attrType"] in openTypesMap:
                                     inav, rest = der_decoder(
-                                        bagattr['attrValues'][0], asn1Spec=openTypesMap[bagattr['attrType']])
+                                        bagattr["attrValues"][0],
+                                        asn1Spec=openTypesMap[bagattr["attrType"]],
+                                    )
 
                                     self.assertFalse(rest)
 
-                                    if bagattr['attrType'] == rfc2985.pkcs_9_at_friendlyName:
-                                        self.assertEqual( "3f71af65-1687-444a-9f46-c8be194c3e8e", inav)
+                                    if (
+                                        bagattr["attrType"]
+                                        == rfc2985.pkcs_9_at_friendlyName
+                                    ):
+                                        self.assertEqual(
+                                            "3f71af65-1687-444a-9f46-c8be194c3e8e", inav
+                                        )
 
-                                    if bagattr['attrType'] == rfc2985.pkcs_9_at_localKeyId:
-                                        self.assertEqual(univ.OctetString(hexValue='01000000'), inav)
+                                    if (
+                                        bagattr["attrType"]
+                                        == rfc2985.pkcs_9_at_localKeyId
+                                    ):
+                                        self.assertEqual(
+                                            univ.OctetString(hexValue="01000000"), inav
+                                        )
 
-            if attr['type'] == rfc2985.pkcs_9_at_pkcs7PDU:
+            if attr["type"] == rfc2985.pkcs_9_at_pkcs7PDU:
                 ci, rest = der_decoder(
-                    attr['values'][0], asn1Spec=rfc5652.ContentInfo())
+                    attr["values"][0], asn1Spec=rfc5652.ContentInfo()
+                )
 
                 self.assertFalse(rest)
-                self.assertEqual(rfc5652.id_signedData, ci['contentType'])
+                self.assertEqual(rfc5652.id_signedData, ci["contentType"])
 
-                sd, rest = der_decoder(
-                    ci['content'], asn1Spec=rfc5652.SignedData())
+                sd, rest = der_decoder(ci["content"], asn1Spec=rfc5652.SignedData())
 
                 self.assertFalse(rest)
-                self.assertEqual(1, sd['version'])
-        
-                for si in sd['signerInfos']:
-                    self.assertEqual(1, si['version'])
+                self.assertEqual(1, sd["version"])
 
-                    for siattr in si['signedAttrs']:
-                        if siattr['attrType'] in openTypesMap:
+                for si in sd["signerInfos"]:
+                    self.assertEqual(1, si["version"])
+
+                    for siattr in si["signedAttrs"]:
+                        if siattr["attrType"] in openTypesMap:
                             siav, rest = der_decoder(
-                                siattr['attrValues'][0], asn1Spec=openTypesMap[siattr['attrType']])
+                                siattr["attrValues"][0],
+                                asn1Spec=openTypesMap[siattr["attrType"]],
+                            )
 
                             self.assertFalse(rest)
 
-                            if siattr['attrType'] == rfc2985.pkcs_9_at_contentType:
+                            if siattr["attrType"] == rfc2985.pkcs_9_at_contentType:
                                 self.assertEqual(rfc5652.id_data, siav)
 
-                            if siattr['attrType'] == rfc2985.pkcs_9_at_messageDigest:
-                                self.assertEqual('b6e422a4', siav.prettyPrint()[2:10])
+                            if siattr["attrType"] == rfc2985.pkcs_9_at_messageDigest:
+                                self.assertEqual("b6e422a4", siav.prettyPrint()[2:10])
 
-                            if siattr['attrType'] == rfc2985.pkcs_9_at_signingTime:
-                                self.assertEqual('190529182319Z', siav['utcTime'])
+                            if siattr["attrType"] == rfc2985.pkcs_9_at_signingTime:
+                                self.assertEqual("190529182319Z", siav["utcTime"])
 
-                for choices in sd['certificates']:
-                    for rdn in choices[0]['tbsCertificate']['subject']['rdnSequence']:
-                        if rdn[0]['type'] in openTypesMap:
+                for choices in sd["certificates"]:
+                    for rdn in choices[0]["tbsCertificate"]["subject"]["rdnSequence"]:
+                        if rdn[0]["type"] in openTypesMap:
                             nv, rest = der_decoder(
-                                rdn[0]['value'], asn1Spec=openTypesMap[rdn[0]['type']])
+                                rdn[0]["value"], asn1Spec=openTypesMap[rdn[0]["type"]]
+                            )
                             self.assertFalse(rest)
 
-                            if rdn[0]['type'] == rfc2985.pkcs_9_at_emailAddress:
-                                self.assertEqual('alice@example.com', nv)
+                            if rdn[0]["type"] == rfc2985.pkcs_9_at_emailAddress:
+                                self.assertEqual("alice@example.com", nv)
 
     def testOpenTypes(self):
         openTypesMap = {
@@ -234,82 +254,107 @@ HktMK+isIjxOTk4yJTOOAgIH0A==
 
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec,
-            openTypes=openTypesMap, decodeOpenTypes=True)
+            substrate,
+            asn1Spec=self.asn1Spec,
+            openTypes=openTypesMap,
+            decodeOpenTypes=True,
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         for attr in asn1Object:
-            self.assertTrue(attr['type'], openTypesMap)
+            self.assertTrue(attr["type"], openTypesMap)
 
-            if attr['type'] == rfc2985.pkcs_9_at_userPKCS12:
+            if attr["type"] == rfc2985.pkcs_9_at_userPKCS12:
 
-                self.assertEqual(univ.Integer(3), attr['values'][0]['version'])
-                self.assertEqual(rfc5652.id_data, attr['values'][0]['authSafe']['contentType'])
+                self.assertEqual(univ.Integer(3), attr["values"][0]["version"])
+                self.assertEqual(
+                    rfc5652.id_data, attr["values"][0]["authSafe"]["contentType"]
+                )
 
                 authsafe, rest = der_decoder(
-                    attr['values'][0]['authSafe']['content'],
-                    asn1Spec=rfc7292.AuthenticatedSafe())
+                    attr["values"][0]["authSafe"]["content"],
+                    asn1Spec=rfc7292.AuthenticatedSafe(),
+                )
 
                 self.assertFalse(rest)
 
                 for ci in authsafe:
-                    self.assertEqual(rfc5652.id_data, ci['contentType'])
+                    self.assertEqual(rfc5652.id_data, ci["contentType"])
 
                     indata, rest = der_decoder(
-                        ci['content'], asn1Spec=univ.OctetString())
+                        ci["content"], asn1Spec=univ.OctetString()
+                    )
 
                     self.assertFalse(rest)
 
                     sc, rest = der_decoder(
-                        indata, asn1Spec=rfc7292.SafeContents(), decodeOpenTypes=True)
+                        indata, asn1Spec=rfc7292.SafeContents(), decodeOpenTypes=True
+                    )
 
                     self.assertFalse(rest)
 
                     for sb in sc:
-                        if sb['bagId'] in rfc7292.pkcs12BagTypeMap:
-                            for bagattr in sb['bagAttributes']:
-                                if bagattr['attrType'] in openTypesMap:
+                        if sb["bagId"] in rfc7292.pkcs12BagTypeMap:
+                            for bagattr in sb["bagAttributes"]:
+                                if bagattr["attrType"] in openTypesMap:
 
-                                    if bagattr['attrType'] == rfc2985.pkcs_9_at_friendlyName:
+                                    if (
+                                        bagattr["attrType"]
+                                        == rfc2985.pkcs_9_at_friendlyName
+                                    ):
                                         self.assertEqual(
                                             "3f71af65-1687-444a-9f46-c8be194c3e8e",
-                                            bagattr['attrValues'][0])
+                                            bagattr["attrValues"][0],
+                                        )
 
-                                    if bagattr['attrType'] == rfc2985.pkcs_9_at_localKeyId:
+                                    if (
+                                        bagattr["attrType"]
+                                        == rfc2985.pkcs_9_at_localKeyId
+                                    ):
                                         self.assertEqual(
-                                            univ.OctetString(hexValue='01000000'),
-                                            bagattr['attrValues'][0])
+                                            univ.OctetString(hexValue="01000000"),
+                                            bagattr["attrValues"][0],
+                                        )
 
-            if attr['type'] == rfc2985.pkcs_9_at_pkcs7PDU:
-                self.assertEqual(rfc5652.id_signedData, attr['values'][0]['contentType'])
-                self.assertEqual(1, attr['values'][0]['content']['version'])
-        
-                for si in attr['values'][0]['content']['signerInfos']:
-                    self.assertEqual(1, si['version'])
+            if attr["type"] == rfc2985.pkcs_9_at_pkcs7PDU:
+                self.assertEqual(
+                    rfc5652.id_signedData, attr["values"][0]["contentType"]
+                )
+                self.assertEqual(1, attr["values"][0]["content"]["version"])
 
-                    for siattr in si['signedAttrs']:
-                        if siattr['attrType'] in openTypesMap:
- 
-                            if siattr['attrType'] == rfc2985.pkcs_9_at_contentType:
-                                self.assertEqual(rfc5652.id_data, siattr['attrValues'][0])
+                for si in attr["values"][0]["content"]["signerInfos"]:
+                    self.assertEqual(1, si["version"])
 
-                            if siattr['attrType'] == rfc2985.pkcs_9_at_messageDigest:
-                                self.assertEqual('b6e422a4', siattr['attrValues'][0].prettyPrint()[2:10])
+                    for siattr in si["signedAttrs"]:
+                        if siattr["attrType"] in openTypesMap:
 
-                            if siattr['attrType'] == rfc2985.pkcs_9_at_signingTime:
-                                self.assertEqual('190529182319Z', siattr['attrValues'][0]['utcTime'])
+                            if siattr["attrType"] == rfc2985.pkcs_9_at_contentType:
+                                self.assertEqual(
+                                    rfc5652.id_data, siattr["attrValues"][0]
+                                )
 
-                for choices in attr['values'][0]['content']['certificates']:
-                    for rdn in choices[0]['tbsCertificate']['subject']['rdnSequence']:
-                        if rdn[0]['type'] in openTypesMap:
-                            if rdn[0]['type'] == rfc2985.pkcs_9_at_emailAddress:
-                                self.assertEqual('alice@example.com', rdn[0]['value'])
+                            if siattr["attrType"] == rfc2985.pkcs_9_at_messageDigest:
+                                self.assertEqual(
+                                    "b6e422a4",
+                                    siattr["attrValues"][0].prettyPrint()[2:10],
+                                )
+
+                            if siattr["attrType"] == rfc2985.pkcs_9_at_signingTime:
+                                self.assertEqual(
+                                    "190529182319Z", siattr["attrValues"][0]["utcTime"]
+                                )
+
+                for choices in attr["values"][0]["content"]["certificates"]:
+                    for rdn in choices[0]["tbsCertificate"]["subject"]["rdnSequence"]:
+                        if rdn[0]["type"] in openTypesMap:
+                            if rdn[0]["type"] == rfc2985.pkcs_9_at_emailAddress:
+                                self.assertEqual("alice@example.com", rdn[0]["value"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite)

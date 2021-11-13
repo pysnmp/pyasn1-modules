@@ -55,57 +55,60 @@ dsnhVtIdkPtfJIvcYteYJg==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertEqual(rfc5652.id_signedData, asn1Object['contentType'])
+        self.assertEqual(rfc5652.id_signedData, asn1Object["contentType"])
 
-        inner, rest = der_decoder(asn1Object['content'], asn1Spec=rfc5652.SignedData())
+        inner, rest = der_decoder(asn1Object["content"], asn1Spec=rfc5652.SignedData())
 
         self.assertEqual(
-            rfc4108.id_ct_firmwarePackage, inner['encapContentInfo']['eContentType'])
+            rfc4108.id_ct_firmwarePackage, inner["encapContentInfo"]["eContentType"]
+        )
 
-        self.assertTrue(inner['encapContentInfo']['eContent'])
+        self.assertTrue(inner["encapContentInfo"]["eContent"])
 
         attribute_list = []
 
-        for attr in inner['signerInfos'][0]['signedAttrs']:
-            attribute_list.append(attr['attrType'])
-            if attr['attrType'] == rfc4108.id_aa_targetHardwareIDs:
-                av, rest = der_decoder(attr['attrValues'][0],
-                                       asn1Spec=rfc4108.TargetHardwareIdentifiers())
+        for attr in inner["signerInfos"][0]["signedAttrs"]:
+            attribute_list.append(attr["attrType"])
+            if attr["attrType"] == rfc4108.id_aa_targetHardwareIDs:
+                av, rest = der_decoder(
+                    attr["attrValues"][0], asn1Spec=rfc4108.TargetHardwareIdentifiers()
+                )
                 self.assertEqual(2, len(av))
 
                 for oid in av:
-                    self.assertIn('1.3.6.1.4.1.221121.1.1.', oid.prettyPrint())
+                    self.assertIn("1.3.6.1.4.1.221121.1.1.", oid.prettyPrint())
 
-        self.assertIn( rfc5652.id_contentType, attribute_list)
-        self.assertIn( rfc5652.id_messageDigest, attribute_list)
+        self.assertIn(rfc5652.id_contentType, attribute_list)
+        self.assertIn(rfc5652.id_messageDigest, attribute_list)
         self.assertIn(rfc4108.id_aa_targetHardwareIDs, attribute_list)
         self.assertIn(rfc4108.id_aa_fwPkgMessageDigest, attribute_list)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        self.assertEqual(asn1Object['contentType'], rfc5652.id_signedData)
+        self.assertEqual(asn1Object["contentType"], rfc5652.id_signedData)
 
-        sd_eci = asn1Object['content']['encapContentInfo']
+        sd_eci = asn1Object["content"]["encapContentInfo"]
 
-        self.assertEqual(sd_eci['eContentType'], rfc4108.id_ct_firmwarePackage)
-        self.assertTrue(sd_eci['eContent'].hasValue())
+        self.assertEqual(sd_eci["eContentType"], rfc4108.id_ct_firmwarePackage)
+        self.assertTrue(sd_eci["eContent"].hasValue())
 
-        for attr in asn1Object['content']['signerInfos'][0]['signedAttrs']:
-            self.assertIn(attr['attrType'], rfc5652.cmsAttributesMap)
-            if attr['attrType'] == rfc4108.id_aa_targetHardwareIDs:
-               for oid in attr['attrValues'][0]:
-                   self.assertIn('1.3.6.1.4.1.221121.1.1.', oid.prettyPrint())
+        for attr in asn1Object["content"]["signerInfos"][0]["signedAttrs"]:
+            self.assertIn(attr["attrType"], rfc5652.cmsAttributesMap)
+            if attr["attrType"] == rfc4108.id_aa_targetHardwareIDs:
+                for oid in attr["attrValues"][0]:
+                    self.assertIn("1.3.6.1.4.1.221121.1.1.", oid.prettyPrint())
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

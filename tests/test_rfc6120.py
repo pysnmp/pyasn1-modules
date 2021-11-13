@@ -48,28 +48,29 @@ nOzhcMpnHs2U/eN0lHl/JNgnbftl6Dvnt59xdA==
 
         count = 0
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] == rfc5280.id_ce_subjectAltName:
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] == rfc5280.id_ce_subjectAltName:
                 extnValue, rest = der_decoder(
-                    extn['extnValue'], asn1Spec=rfc5280.SubjectAltName())
+                    extn["extnValue"], asn1Spec=rfc5280.SubjectAltName()
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
                 for gn in extnValue:
-                    if gn['otherName'].hasValue():
-                        gn_on = gn['otherName']
-                        if gn_on['type-id'] == rfc6120.id_on_xmppAddr:
-                            self.assertIn(gn_on['type-id'], rfc5280.anotherNameMap)
+                    if gn["otherName"].hasValue():
+                        gn_on = gn["otherName"]
+                        if gn_on["type-id"] == rfc6120.id_on_xmppAddr:
+                            self.assertIn(gn_on["type-id"], rfc5280.anotherNameMap)
 
-                            spec = rfc5280.anotherNameMap[gn['otherName']['type-id']]
-                            on, rest = der_decoder(gn_on['value'], asn1Spec=spec)
+                            spec = rfc5280.anotherNameMap[gn["otherName"]["type-id"]]
+                            on, rest = der_decoder(gn_on["value"], asn1Spec=spec)
 
                             self.assertFalse(rest)
                             self.assertTrue(on.prettyPrint())
-                            self.assertEqual(gn_on['value'], der_encoder(on))
-                            self.assertEqual('im.example.com', on)
+                            self.assertEqual(gn_on["value"], der_encoder(on))
+                            self.assertEqual("im.example.com", on)
 
                             count += 1
 
@@ -77,30 +78,31 @@ nOzhcMpnHs2U/eN0lHl/JNgnbftl6Dvnt59xdA==
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.xmpp_server_cert_pem_text)
-        asn1Object, rest = der_decoder(substrate,
-                                       asn1Spec=self.asn1Spec,
-                                       decodeOpenTypes=True)
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         count = 0
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] == rfc5280.id_ce_subjectAltName:
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] == rfc5280.id_ce_subjectAltName:
                 extnValue, rest = der_decoder(
-                    extn['extnValue'], asn1Spec=rfc5280.SubjectAltName(),
-                    decodeOpenTypes=True)
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.SubjectAltName(),
+                    decodeOpenTypes=True,
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
                 for gn in extnValue:
-                    if gn['otherName'].hasValue():
-                        if gn['otherName']['type-id'] == rfc6120.id_on_xmppAddr:
-                            self.assertEqual(
-                                'im.example.com', gn['otherName']['value'])
+                    if gn["otherName"].hasValue():
+                        if gn["otherName"]["type-id"] == rfc6120.id_on_xmppAddr:
+                            self.assertEqual("im.example.com", gn["otherName"]["value"])
                             count += 1
 
         self.assertEqual(1, count)
@@ -108,6 +110,6 @@ nOzhcMpnHs2U/eN0lHl/JNgnbftl6Dvnt59xdA==
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

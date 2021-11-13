@@ -47,26 +47,26 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
         layers = {
             rfc3852.id_ct_contentInfo: rfc3852.ContentInfo(),
             rfc3852.id_signedData: rfc3852.SignedData(),
-            rfc6402.id_cct_PKIData: rfc6402.PKIData()
+            rfc6402.id_cct_PKIData: rfc6402.PKIData(),
         }
 
         getNextLayer = {
-            rfc3852.id_ct_contentInfo: lambda x: x['contentType'],
-            rfc3852.id_signedData: lambda x: x['encapContentInfo']['eContentType'],
-            rfc6402.id_cct_PKIData: lambda x: None
+            rfc3852.id_ct_contentInfo: lambda x: x["contentType"],
+            rfc3852.id_signedData: lambda x: x["encapContentInfo"]["eContentType"],
+            rfc6402.id_cct_PKIData: lambda x: None,
         }
 
         getNextSubstrate = {
-            rfc3852.id_ct_contentInfo: lambda x: x['content'],
-            rfc3852.id_signedData: lambda x: x['encapContentInfo']['eContent'],
-            rfc6402.id_cct_PKIData: lambda x: None
+            rfc3852.id_ct_contentInfo: lambda x: x["content"],
+            rfc3852.id_signedData: lambda x: x["encapContentInfo"]["eContent"],
+            rfc6402.id_cct_PKIData: lambda x: None,
         }
 
         alg_oids = (
-            univ.ObjectIdentifier('1.3.14.3.2.26'),
-            univ.ObjectIdentifier('1.2.840.113549.1.1.1'),
-            univ.ObjectIdentifier('1.2.840.113549.1.1.5'),
-            univ.ObjectIdentifier('1.2.840.113549.1.1.11'),
+            univ.ObjectIdentifier("1.3.14.3.2.26"),
+            univ.ObjectIdentifier("1.2.840.113549.1.1.1"),
+            univ.ObjectIdentifier("1.2.840.113549.1.1.5"),
+            univ.ObjectIdentifier("1.2.840.113549.1.1.11"),
         )
 
         encoded_null = der_encoder(univ.Null(""))
@@ -81,36 +81,36 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
             self.assertFalse(rest)
             self.assertTrue(asn1Object.prettyPrint())
             self.assertEqual(substrate, der_encoder(asn1Object))
-    
+
             if next_layer == rfc3852.id_signedData:
-                for d in asn1Object['digestAlgorithms']:
-                    self.assertIn(d['algorithm'], alg_oids)
-                    self.assertEqual(encoded_null, d['parameters'])
+                for d in asn1Object["digestAlgorithms"]:
+                    self.assertIn(d["algorithm"], alg_oids)
+                    self.assertEqual(encoded_null, d["parameters"])
                     count += 1
 
-                for si in asn1Object['signerInfos']:
-                    self.assertIn(si['digestAlgorithm']['algorithm'], alg_oids)
-                    self.assertEqual(
-                        encoded_null, si['digestAlgorithm']['parameters'])
+                for si in asn1Object["signerInfos"]:
+                    self.assertIn(si["digestAlgorithm"]["algorithm"], alg_oids)
+                    self.assertEqual(encoded_null, si["digestAlgorithm"]["parameters"])
                     count += 1
 
-                    self.assertIn(si['signatureAlgorithm']['algorithm'], alg_oids)
+                    self.assertIn(si["signatureAlgorithm"]["algorithm"], alg_oids)
                     self.assertEqual(
-                        encoded_null, si['signatureAlgorithm']['parameters'])
+                        encoded_null, si["signatureAlgorithm"]["parameters"]
+                    )
                     count += 1
 
             if next_layer == rfc6402.id_cct_PKIData:
-                for req in asn1Object['reqSequence']:
-                    cr = req['tcr']['certificationRequest']
-                    self.assertIn(cr['signatureAlgorithm']['algorithm'], alg_oids)
+                for req in asn1Object["reqSequence"]:
+                    cr = req["tcr"]["certificationRequest"]
+                    self.assertIn(cr["signatureAlgorithm"]["algorithm"], alg_oids)
                     self.assertEqual(
-                        encoded_null, cr['signatureAlgorithm']['parameters'])
+                        encoded_null, cr["signatureAlgorithm"]["parameters"]
+                    )
                     count += 1
 
-                    cri_spki = cr['certificationRequestInfo']['subjectPublicKeyInfo']
-                    self.assertIn(cri_spki['algorithm']['algorithm'], alg_oids)
-                    self.assertEqual(
-                        encoded_null, cri_spki['algorithm']['parameters'])
+                    cri_spki = cr["certificationRequestInfo"]["subjectPublicKeyInfo"]
+                    self.assertIn(cri_spki["algorithm"]["algorithm"], alg_oids)
+                    self.assertEqual(encoded_null, cri_spki["algorithm"]["parameters"])
                     count += 1
 
             substrate = getNextSubstrate[next_layer](asn1Object)
@@ -121,6 +121,6 @@ xicQmJP+VoMHo/ZpjFY9fYCjNZUArgKsEwK/s+p9yrVVeB1Nf8Mn
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

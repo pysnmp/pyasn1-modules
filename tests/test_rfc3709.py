@@ -46,23 +46,23 @@ Pj22pmfmQi5w21UljqoTj/+lQLkU3wfy5BdVKBwI0GfEA+YL3ctSzPNqAA==
 
         extn_list = []
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            extn_list.append(extn['extnID'])
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            extn_list.append(extn["extnID"])
 
-            if extn['extnID'] == rfc3709.id_pe_logotype:
-                s = extn['extnValue']
+            if extn["extnID"] == rfc3709.id_pe_logotype:
+                s = extn["extnValue"]
                 logotype, rest = der_decoder(s, rfc3709.LogotypeExtn())
 
                 self.assertFalse(rest)
                 self.assertTrue(logotype.prettyPrint())
                 self.assertEqual(s, der_encoder(logotype))
 
-                ids = logotype['subjectLogo']['direct']['image'][0]['imageDetails']
+                ids = logotype["subjectLogo"]["direct"]["image"][0]["imageDetails"]
 
-                self.assertEqual( "image/png", ids['mediaType'])
+                self.assertEqual("image/png", ids["mediaType"])
 
                 expected = "http://www.vigilsec.com/vigilsec_logo.png"
-                self.assertEqual(expected, ids['logotypeURI'][0])
+                self.assertEqual(expected, ids["logotypeURI"][0])
 
         self.assertIn(rfc3709.id_pe_logotype, extn_list)
 
@@ -74,13 +74,14 @@ Pj22pmfmQi5w21UljqoTj/+lQLkU3wfy5BdVKBwI0GfEA+YL3ctSzPNqAA==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] in rfc5280.certificateExtensionsMap.keys():
                 extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.certificateExtensionsMap[extn["extnID"]],
+                )
 
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
 
 class CertificateExtnWithDataTestCase(unittest.TestCase):
@@ -149,22 +150,23 @@ kbpmR6cDliloU808Bi/erMkrfUHRoZ2d586lkmwkLcoDkJ/yPD+Jhw==
 
         extn_list = []
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            extn_list.append(extn['extnID'])
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            extn_list.append(extn["extnID"])
 
-            if extn['extnID'] == rfc3709.id_pe_logotype:
-                s = extn['extnValue']
+            if extn["extnID"] == rfc3709.id_pe_logotype:
+                s = extn["extnValue"]
                 logotype, rest = der_decoder(s, rfc3709.LogotypeExtn())
                 self.assertFalse(rest)
 
                 self.assertTrue(logotype.prettyPrint())
                 self.assertEqual(s, der_encoder(logotype))
 
-                ids = logotype['subjectLogo']['direct']['image'][0]['imageDetails']
+                ids = logotype["subjectLogo"]["direct"]["image"][0]["imageDetails"]
 
-                self.assertEqual("image/svg+xml", ids['mediaType'])
+                self.assertEqual("image/svg+xml", ids["mediaType"])
                 self.assertEqual(
-                    "data:image/svg+xml;base64", ids['logotypeURI'][0][0:25])
+                    "data:image/svg+xml;base64", ids["logotypeURI"][0][0:25]
+                )
 
         self.assertIn(rfc3709.id_pe_logotype, extn_list)
 
@@ -176,17 +178,18 @@ kbpmR6cDliloU808Bi/erMkrfUHRoZ2d586lkmwkLcoDkJ/yPD+Jhw==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] in rfc5280.certificateExtensionsMap.keys():
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] in rfc5280.certificateExtensionsMap.keys():
                 extnValue, rest = der_decoder(
-                    extn['extnValue'],
-                    asn1Spec=rfc5280.certificateExtensionsMap[extn['extnID']])
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.certificateExtensionsMap[extn["extnID"]],
+                )
 
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

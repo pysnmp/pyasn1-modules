@@ -40,40 +40,40 @@ XQ7u2qbaKFtZ7V96NH8ApkUFkg==
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-        self.assertEqual(rfc3274.id_ct_compressedData, asn1Object['contentType'])
+        self.assertEqual(rfc3274.id_ct_compressedData, asn1Object["contentType"])
 
-        cd, rest = der_decoder(
-            asn1Object['content'], asn1Spec=rfc3274.CompressedData())
+        cd, rest = der_decoder(asn1Object["content"], asn1Spec=rfc3274.CompressedData())
 
         self.assertFalse(rest)
         self.assertTrue(cd.prettyPrint())
-        self.assertEqual(asn1Object['content'], der_encoder(cd))
+        self.assertEqual(asn1Object["content"], der_encoder(cd))
 
-        self.assertEqual(rfc3274.id_alg_zlibCompress,
-                         cd['compressionAlgorithm']['algorithm'])
-        self.assertEqual(rfc5652.id_data, cd['encapContentInfo']['eContentType'])
+        self.assertEqual(
+            rfc3274.id_alg_zlibCompress, cd["compressionAlgorithm"]["algorithm"]
+        )
+        self.assertEqual(rfc5652.id_data, cd["encapContentInfo"]["eContentType"])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.compressed_data_pem_text)
-        asn1Object, rest = der_decoder(substrate,
-                                       asn1Spec=self.asn1Spec,
-                                       decodeOpenTypes=True)
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
+        self.assertEqual(rfc3274.id_ct_compressedData, asn1Object["contentType"])
+
+        cd = asn1Object["content"]
+
         self.assertEqual(
-            rfc3274.id_ct_compressedData, asn1Object['contentType'])
-
-        cd = asn1Object['content']
-
-        self.assertEqual(rfc3274.id_alg_zlibCompress,
-                         cd['compressionAlgorithm']['algorithm'])
-        self.assertEqual(rfc5652.id_data, cd['encapContentInfo']['eContentType'])
+            rfc3274.id_alg_zlibCompress, cd["compressionAlgorithm"]["algorithm"]
+        )
+        self.assertEqual(rfc5652.id_data, cd["encapContentInfo"]["eContentType"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

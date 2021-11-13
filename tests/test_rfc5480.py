@@ -49,31 +49,32 @@ Ea8/B6hPatJ0ES8q/HO3X8IVQwVs1n3aAr0im0/T+Xc=
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        algid = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
+        algid = asn1Object["tbsCertificate"]["subjectPublicKeyInfo"]["algorithm"]
 
-        self.assertEqual(rfc5480.id_ecPublicKey, algid['algorithm'])
+        self.assertEqual(rfc5480.id_ecPublicKey, algid["algorithm"])
 
-        param, rest = der_decoder(algid['parameters'], asn1Spec=rfc5480.ECParameters())
+        param, rest = der_decoder(algid["parameters"], asn1Spec=rfc5480.ECParameters())
 
         self.assertTrue(param.prettyPrint())
-        self.assertEqual(rfc5480.secp384r1, param['namedCurve'])
+        self.assertEqual(rfc5480.secp384r1, param["namedCurve"])
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.digicert_ec_cert_pem_text)
-        asn1Object, rest = der_decoder(substrate,
-                                       asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+        asn1Object, rest = der_decoder(
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
-    
-        spki_alg = asn1Object['tbsCertificate']['subjectPublicKeyInfo']['algorithm']
 
-        self.assertEqual(rfc5480.id_ecPublicKey, spki_alg['algorithm'])
-        self.assertEqual(rfc5480.secp384r1, spki_alg['parameters']['namedCurve'])
+        spki_alg = asn1Object["tbsCertificate"]["subjectPublicKeyInfo"]["algorithm"]
+
+        self.assertEqual(rfc5480.id_ecPublicKey, spki_alg["algorithm"])
+        self.assertEqual(rfc5480.secp384r1, spki_alg["parameters"]["namedCurve"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

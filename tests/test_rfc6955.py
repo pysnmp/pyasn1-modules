@@ -48,50 +48,53 @@ Xo9l9a+tyVybAsCoiClhYw==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        spki_a = asn1Object['certificationRequestInfo']['subjectPublicKeyInfo']['algorithm']
+        spki_a = asn1Object["certificationRequestInfo"]["subjectPublicKeyInfo"][
+            "algorithm"
+        ]
 
-        self.assertEqual(rfc5480.dhpublicnumber, spki_a['algorithm'])
-        self.assertIn(spki_a['algorithm'], rfc5280.algorithmIdentifierMap)
+        self.assertEqual(rfc5480.dhpublicnumber, spki_a["algorithm"])
+        self.assertIn(spki_a["algorithm"], rfc5280.algorithmIdentifierMap)
 
         params, rest = der_decoder(
-            spki_a['parameters'], asn1Spec=rfc6955.DomainParameters())
+            spki_a["parameters"], asn1Spec=rfc6955.DomainParameters()
+        )
 
         self.assertFalse(rest)
         self.assertTrue(params.prettyPrint())
-        self.assertEqual(spki_a['parameters'], der_encoder(params))
-        self.assertEqual(55, params['validationParms']['pgenCounter'])
+        self.assertEqual(spki_a["parameters"], der_encoder(params))
+        self.assertEqual(55, params["validationParms"]["pgenCounter"])
 
-        sig_a = asn1Object['signatureAlgorithm']
+        sig_a = asn1Object["signatureAlgorithm"]
 
-        self.assertEqual(
-            rfc6955.id_dhPop_static_sha1_hmac_sha1, sig_a['algorithm'])
-        self.assertIn(sig_a['algorithm'], rfc5280.algorithmIdentifierMap)
-        self.assertEqual(sig_a['parameters'], der_encoder(univ.Null("")))
+        self.assertEqual(rfc6955.id_dhPop_static_sha1_hmac_sha1, sig_a["algorithm"])
+        self.assertIn(sig_a["algorithm"], rfc5280.algorithmIdentifierMap)
+        self.assertEqual(sig_a["parameters"], der_encoder(univ.Null("")))
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        spki_a = asn1Object['certificationRequestInfo']['subjectPublicKeyInfo']['algorithm']
+        spki_a = asn1Object["certificationRequestInfo"]["subjectPublicKeyInfo"][
+            "algorithm"
+        ]
 
-        self.assertEqual(rfc5480.dhpublicnumber, spki_a['algorithm'])
-        self.assertEqual(
-            55, spki_a['parameters']['validationParms']['pgenCounter'])
+        self.assertEqual(rfc5480.dhpublicnumber, spki_a["algorithm"])
+        self.assertEqual(55, spki_a["parameters"]["validationParms"]["pgenCounter"])
 
-        sig_a = asn1Object['signatureAlgorithm']
+        sig_a = asn1Object["signatureAlgorithm"]
 
-        self.assertEqual(
-            rfc6955.id_dhPop_static_sha1_hmac_sha1, sig_a['algorithm'])
-        self.assertEqual(univ.Null(""), sig_a['parameters'])
+        self.assertEqual(rfc6955.id_dhPop_static_sha1_hmac_sha1, sig_a["algorithm"])
+        self.assertEqual(univ.Null(""), sig_a["parameters"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

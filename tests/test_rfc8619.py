@@ -22,15 +22,13 @@ class HKDFSHA256TestCase(unittest.TestCase):
     def testDerCodec(self):
 
         substrate = pem.readBase64fromText(self.alg_id_1_pem_text)
-        asn1Object, rest = der_decoder.decode(
-            substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder.encode(asn1Object))
 
-        self.assertEqual(
-            rfc8619.id_alg_hkdf_with_sha256, asn1Object['algorithm'])
+        self.assertEqual(rfc8619.id_alg_hkdf_with_sha256, asn1Object["algorithm"])
 
 
 class HKDFSHA384TestCase(unittest.TestCase):
@@ -47,8 +45,7 @@ class HKDFSHA384TestCase(unittest.TestCase):
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder.encode(asn1Object))
-        self.assertEqual(
-            rfc8619.id_alg_hkdf_with_sha384, asn1Object['algorithm'])
+        self.assertEqual(rfc8619.id_alg_hkdf_with_sha384, asn1Object["algorithm"])
 
 
 class HKDFSHA512TestCase(unittest.TestCase):
@@ -61,18 +58,16 @@ class HKDFSHA512TestCase(unittest.TestCase):
 
         substrate = pem.readBase64fromText(self.alg_id_1_pem_text)
 
-        asn1Object, rest = der_decoder.decode(
-            substrate, asn1Spec=self.asn1Spec)
+        asn1Object, rest = der_decoder.decode(substrate, asn1Spec=self.asn1Spec)
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder.encode(asn1Object))
-        self.assertEqual(
-            rfc8619.id_alg_hkdf_with_sha512, asn1Object['algorithm'])
+        self.assertEqual(rfc8619.id_alg_hkdf_with_sha512, asn1Object["algorithm"])
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())

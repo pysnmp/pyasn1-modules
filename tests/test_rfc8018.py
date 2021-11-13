@@ -31,26 +31,28 @@ AwIHBAjv5ZjvIbM9bQQQuBslZe43PKbe3KJqF4sMEA==
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        alg_oid = asn1Object['pwri']['keyDerivationAlgorithm']['algorithm']
+        alg_oid = asn1Object["pwri"]["keyDerivationAlgorithm"]["algorithm"]
 
         self.assertEqual(rfc8018.id_PBKDF2, alg_oid)
 
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.rfc3211_ex1_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
-        icount = (asn1Object['pwri']['keyDerivationAlgorithm']
-                            ['parameters']['iterationCount'])
+        icount = asn1Object["pwri"]["keyDerivationAlgorithm"]["parameters"][
+            "iterationCount"
+        ]
 
         self.assertEqual(5, icount)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite)

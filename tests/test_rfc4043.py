@@ -48,30 +48,32 @@ x0bpZq3PJaO0WlBgFicCMQCf+67wSvjxxtjI/OAg4t8NQIJW1LcehSXizlPDc772
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         perm_id_oid = rfc4043.id_on_permanentIdentifier
-        assigner_oid = univ.ObjectIdentifier('1.3.6.1.4.1.22112.48')
+        assigner_oid = univ.ObjectIdentifier("1.3.6.1.4.1.22112.48")
         permanent_identifier_found = False
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] == rfc5280.id_ce_subjectAltName:
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] == rfc5280.id_ce_subjectAltName:
                 extnValue, rest = der_decoder(
-                    extn['extnValue'], asn1Spec=rfc5280.SubjectAltName())
+                    extn["extnValue"], asn1Spec=rfc5280.SubjectAltName()
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
                 for gn in extnValue:
-                    if gn['otherName'].hasValue():
-                        self.assertEqual(perm_id_oid, gn['otherName']['type-id'])
+                    if gn["otherName"].hasValue():
+                        self.assertEqual(perm_id_oid, gn["otherName"]["type-id"])
 
                         onValue, rest = der_decoder(
-                            gn['otherName']['value'],
-                            asn1Spec=rfc4043.PermanentIdentifier())
+                            gn["otherName"]["value"],
+                            asn1Spec=rfc4043.PermanentIdentifier(),
+                        )
 
                         self.assertFalse(rest)
                         self.assertTrue(onValue.prettyPrint())
-                        self.assertEqual(gn['otherName']['value'], der_encoder(onValue))
-                        self.assertEqual(assigner_oid, onValue['assigner'])
+                        self.assertEqual(gn["otherName"]["value"], der_encoder(onValue))
+                        self.assertEqual(assigner_oid, onValue["assigner"])
                         permanent_identifier_found = True
 
         self.assertTrue(permanent_identifier_found)
@@ -79,31 +81,34 @@ x0bpZq3PJaO0WlBgFicCMQCf+67wSvjxxtjI/OAg4t8NQIJW1LcehSXizlPDc772
     def testOpenTypes(self):
         substrate = pem.readBase64fromText(self.cert_pem_text)
         asn1Object, rest = der_decoder(
-            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True)
+            substrate, asn1Spec=self.asn1Spec, decodeOpenTypes=True
+        )
 
         self.assertFalse(rest)
         self.assertTrue(asn1Object.prettyPrint())
         self.assertEqual(substrate, der_encoder(asn1Object))
 
         perm_id_oid = rfc4043.id_on_permanentIdentifier
-        assigner_oid = univ.ObjectIdentifier('1.3.6.1.4.1.22112.48')
+        assigner_oid = univ.ObjectIdentifier("1.3.6.1.4.1.22112.48")
         permanent_identifier_found = False
 
-        for extn in asn1Object['tbsCertificate']['extensions']:
-            if extn['extnID'] == rfc5280.id_ce_subjectAltName:
+        for extn in asn1Object["tbsCertificate"]["extensions"]:
+            if extn["extnID"] == rfc5280.id_ce_subjectAltName:
                 extnValue, rest = der_decoder(
-                    extn['extnValue'], asn1Spec=rfc5280.SubjectAltName(),
-                    decodeOpenTypes=True)
+                    extn["extnValue"],
+                    asn1Spec=rfc5280.SubjectAltName(),
+                    decodeOpenTypes=True,
+                )
 
                 self.assertFalse(rest)
                 self.assertTrue(extnValue.prettyPrint())
-                self.assertEqual(extn['extnValue'], der_encoder(extnValue))
+                self.assertEqual(extn["extnValue"], der_encoder(extnValue))
 
                 for gn in extnValue:
-                    if gn['otherName'].hasValue():
-                        on = gn['otherName']
-                        self.assertEqual(perm_id_oid, on['type-id'])
-                        self.assertEqual(assigner_oid, on['value']['assigner'])
+                    if gn["otherName"].hasValue():
+                        on = gn["otherName"]
+                        self.assertEqual(perm_id_oid, on["type-id"])
+                        self.assertEqual(assigner_oid, on["value"]["assigner"])
                         permanent_identifier_found = True
 
         self.assertTrue(permanent_identifier_found)
@@ -111,6 +116,6 @@ x0bpZq3PJaO0WlBgFicCMQCf+67wSvjxxtjI/OAg4t8NQIJW1LcehSXizlPDc772
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(not result.wasSuccessful())
