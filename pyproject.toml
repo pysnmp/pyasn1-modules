@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pysnmp-pyasn1-modules"
-version = "0.1.0"
+version = "0.2.9"
 description = "A collection of ASN.1-based protocols modules."
 authors = ["rfaircloth-splunk <rfaircloth@splunk.com>"]
 license = "BSD-2-Clause"
