@@ -7,8 +7,6 @@
 import sys
 import unittest
 
-from pyasn1.compat.octets import ints2octs
-
 from pyasn1_modules import pem
 
 
@@ -815,7 +813,7 @@ GGbx7DI=
             50,
         ]
 
-        self.assertEqual(ints2octs(expected), binary)
+        self.assertEqual(bytes(expected), binary)
 
 
 suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
