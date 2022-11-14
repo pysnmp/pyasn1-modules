@@ -16,11 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-        with:
-          python-version: "3.7"
-      - name: Install actionlint
-        run: |
-          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/v1.6.3/scripts/download-actionlint.bash)
       - uses: pre-commit/action@v2.0.3
 
   review_secrets:
@@ -103,11 +98,6 @@ jobs:
         with:
           name: unit tests test-results
           path: test-results
-      - uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ${{ matrix.os }}, ${{ matrix.poetry-version }}
-          fail_ci_if_error: true # optional (default = false)
   publish:
     name: Build Release
     needs:
@@ -136,6 +126,9 @@ jobs:
         run: |
           poetry install
           poetry build
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2.6.0
         with:
@@ -146,7 +139,7 @@ jobs:
             @google/semantic-release-replace-plugin
         env:
           GITHUB_TOKEN: ${{ secrets.SEMREL_TOKEN }}
-          PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          PYPI_USERNAME: "__token__"
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
   update-semver:

@@ -76,7 +76,7 @@
         "assets": [
           "NOTICE",
           "pyproject.toml",
-          "pyasn1/__init__.py"
+          "pyasn1_modules/__init__.py"
         ],
         "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}",
       },
